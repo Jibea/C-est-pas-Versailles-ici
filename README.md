@@ -24,6 +24,10 @@ See [Vite Configuration Reference](https://vitejs.dev/config/).
 ## Project Setup
 
 ```sh
+curl -fsSL https://bun.sh/install | bash
+```
+
+```sh
 bun install
 ```
 
