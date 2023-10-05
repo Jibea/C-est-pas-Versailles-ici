@@ -24,17 +24,21 @@ See [Vite Configuration Reference](https://vitejs.dev/config/).
 ## Project Setup
 
 ```sh
-npm install
+curl -fsSL https://bun.sh/install | bash
+```
+
+```sh
+bun install
 ```
 
 ### Compile and Hot-Reload for Development
 
 ```sh
-npm run dev
+bun run dev
 ```
 
 ### Type-Check, Compile and Minify for Production
 
 ```sh
-npm run build
+bun run build
 ```
