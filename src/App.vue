@@ -1,10 +1,10 @@
 <script lang="ts">
-
+export default {}
 </script>
 
 <template>
     <nav id="nav">
-        <img id="photo" src="src/assets/Pablo_Ibar_(cropped).png" />
+        <img id="photo" src="./assets/Pablo_Ibar_(cropped).png" />
     </nav>
 </template>
 
