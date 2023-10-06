@@ -1,7 +1,4 @@
-<script lang="ts">
-export default {
-  name: 'AboutView'
-}
+<script lang="ts" setup name="AboutView">
 </script>
 
 <template>

@@ -1,5 +1,4 @@
-<script lang="ts">
-export default {}
+<script lang="ts" setup name="App">
 </script>
 
 <template>
