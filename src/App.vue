@@ -1,10 +1,9 @@
-<script lang="ts">
-
+<script lang="ts" setup name="App">
 </script>
 
 <template>
     <nav id="nav">
-        <img id="photo" src="src/assets/Pablo_Ibar_(cropped).png" />
+        <img id="photo" src="./assets/Pablo_Ibar_(cropped).png" />
     </nav>
 </template>
 
