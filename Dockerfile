@@ -1,4 +1,5 @@
-FROM oven/bun
+# Construire l'app
+FROM oven/bun AS build
 
 # Dossier de travail
 WORKDIR /app
@@ -13,9 +14,14 @@ RUN bun install
 # Copie le code
 COPY . .
 
-# Port
-EXPOSE 8080
+# Créer le binaire
+RUN bun run build 
 
-# Build
-CMD ["bun", "run", "build"]
+# Plus petite image
+FROM ubuntu:22.04
 
+WORKDIR /app
+
+COPY --from=build /app/cli /app/cli
+
+CMD ["/app/cli"]
