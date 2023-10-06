@@ -1,15 +1,15 @@
+<script lang="ts">
+export default {
+  name: 'HomeView'
+}
+</script>
+
 <template>
   <div>
       <h1>Welcome to my website!</h1>
       <p>Thanks for visiting.</p>
   </div>
 </template>
-
-<script lang="ts">
-export default {
-  name: 'HomeView'
-}
-</script>
 
 <style>
 h1 {
