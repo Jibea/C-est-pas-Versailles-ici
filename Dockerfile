@@ -1,27 +1,14 @@
-# Construire l'app
-FROM oven/bun AS build
-
-# Dossier de travail
+# build stage
+FROM oven/bun as build-stage
 WORKDIR /app
-
-# Copie des fichiers
-COPY bun.lockb .
 COPY package.json .
-
-# Installation des dépendances
+COPY bun.lockb .
 RUN bun install
-
-# Copie le code
 COPY . .
+RUN bun run build
 
-# Créer le binaire
-RUN bun run build 
-
-# Plus petite image
-FROM ubuntu:22.04
-
-WORKDIR /app
-
-COPY --from=build /app/cli /app/cli
-
-CMD ["/app/cli"]
+# production stage
+FROM nginx:stable-alpine as production-stage
+COPY --from=build-stage /app/dist /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
