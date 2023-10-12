@@ -1,14 +1,12 @@
-# build stage
-FROM oven/bun as build-stage
-WORKDIR /app
-COPY package.json .
-COPY bun.lockb .
-RUN bun install
-COPY . .
-RUN bun run build
+# Pour le developpement
+FROM node:lts as development-stage
 
-# production stage
-FROM nginx:stable-alpine as production-stage
-COPY --from=build-stage /app/dist /usr/share/nginx/html
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+WORKDIR /app
+
+COPY /app/package*.json ./
+
+RUN npm install
+
+COPY . .
+
+CMD ["npm", "run", "serve"]
