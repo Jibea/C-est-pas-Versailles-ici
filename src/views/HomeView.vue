@@ -1,22 +1,18 @@
-<script lang="ts" setup name="HomeView">
-
-</script>
-
 <template>
-  <div>
-      <h1>Welcome to my website!</h1>
-      <p>Thanks for visiting.</p>
+  <div class="home">
+    <img alt="Vue logo" src="../assets/logo.png">
+    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
   </div>
 </template>
 
-<style>
-h1 {
-  font-size: 3rem;
-  color: #333;
-}
+<script lang="ts">
+import { defineComponent } from 'vue';
+import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
 
-p {
-  font-size: 1.5rem;
-  color: #666;
-}
-</style>
+export default defineComponent({
+  name: 'HomeView',
+  components: {
+    HelloWorld,
+  },
+});
+</script>
