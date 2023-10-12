@@ -1,0 +1,10 @@
+version: '3'
+services:
+  vue-app-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./app:/app
+    ports:
+      - "8080:8080"
