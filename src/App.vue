@@ -1,25 +1,30 @@
-<script lang="ts" setup name="App">
-</script>
-
 <template>
-    <nav id="nav">
-        <img id="photo" src="./assets/Pablo_Ibar_(cropped).png" />
-    </nav>
+  <nav>
+    <router-link to="/">Home</router-link> |
+    <router-link to="/about">About</router-link>
+  </nav>
+  <router-view/>
 </template>
 
-<style lang="scss">
-    #nav {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background-color: #000;
-    }
+<style>
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+}
 
-    #photo {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
+nav {
+  padding: 30px;
+}
+
+nav a {
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+nav a.router-link-exact-active {
+  color: #42b983;
+}
 </style>
