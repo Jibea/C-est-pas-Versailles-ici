@@ -1,14 +1,10 @@
 # c-est-pas-versailles-ici
 
-## Project setup
+### Start Project to dev 🐳
 ```
-npm install
+docker-compose up -d
 ```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+This will start the project on http://localhost:8080
 
 ### Compiles and minifies for production
 ```
@@ -27,8 +23,3 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
-
-### Start Docker-compose
-```
-docker-compose up -d
-```
