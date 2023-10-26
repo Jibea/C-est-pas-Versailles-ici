@@ -25,6 +25,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
       
     - name: Change directory to 'app'
+      run: pwd
       run: cd app
 
     - name: Install dependencies
