@@ -1,6 +1,5 @@
 <script setup lang="ts">
-    import { defineProps } from 'vue';
-    import { defineComponent } from 'vue';
+    import { defineProps, defineComponent } from 'vue';
     import OnOff from '@/components/OnOff.vue';
 
 
