@@ -1,15 +1,15 @@
 <script setup lang="ts" name="Burger">
-import { Slide } from 'vue3-burger-menu'
+    import { Slide } from 'vue3-burger-menu'
 </script>
 
 <template>
     <Slide>
-      <a id="home" href="#">
-        <span>Home</span>
-      </a>
-      <a id="edit" href="#">
-        <span>Edit</span>
-      </a>
+        <a id="home" href="#">
+            <span>Home</span>
+        </a>
+        <a id="edit" href="#">
+            <span>Edit</span>
+        </a>
     </Slide>
 </template>
 

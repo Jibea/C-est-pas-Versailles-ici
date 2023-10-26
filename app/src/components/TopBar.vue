@@ -1,6 +1,6 @@
 <script lang="ts" setup name="TopBar">
-import { defineProps } from 'vue';
-import BurgerComponent from '@/components/BurgerComponent.vue';
+    import { defineProps } from 'vue';
+    import BurgerComponent from '@/components/BurgerComponent.vue';
 
 const props = defineProps({
     title: { type: String, required: true },
