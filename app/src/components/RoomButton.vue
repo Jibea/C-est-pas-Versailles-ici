@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import { computed, defineProps } from 'vue';
+import { computed, defineProps } from 'vue';
 
     const props = defineProps({
       roomName: String,
@@ -16,9 +16,11 @@
 </script>
 
 <template>
+  <router-link :to="'/room/' + roomName">
     <button :class="['button', buttonClass]">
         {{ roomName }}
     </button>
+  </router-link>
 </template>
 
 <style scoped>
