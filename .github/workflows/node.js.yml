@@ -25,7 +25,10 @@ jobs:
         node-version: ${{ matrix.node-version }}
       
     - name: Change directory to 'app'
-      run: cd /home/runner/work/C-est-pas-Versailles-ici/C-est-pas-Versailles-ici/app
+      run: |
+        pwd
+        cd /home/runner/work/C-est-pas-Versailles-ici/C-est-pas-Versailles-ici/app |
+        pwd
 
     - name: Install dependencies
       run: npm install
