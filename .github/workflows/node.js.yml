@@ -38,4 +38,4 @@ jobs:
     - name: Run tests
       run: |
         cd /home/runner/work/C-est-pas-Versailles-ici/C-est-pas-Versailles-ici/app
-        npm test
+        npm run test:unit
