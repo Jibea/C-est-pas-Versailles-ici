@@ -23,9 +23,15 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
-    - run: ls
-    - run: cd app/
-    - run: ls
-    - run: npm install
-    - run: npm run build --if-present
-    - run: npm test
+      
+    - name: Change directory to 'app'
+      run: cd app
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Build
+      run: npm run build --if-present
+
+    - name: Run tests
+      run: npm test
