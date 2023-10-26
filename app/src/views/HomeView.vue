@@ -1,7 +1,7 @@
+
 <script lang="ts" setup name="HomeView">
     import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
     import TopBar from '@/components/TopBar.vue';
-
 </script>
 
 <template>
