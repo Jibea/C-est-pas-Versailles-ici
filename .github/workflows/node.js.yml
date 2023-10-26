@@ -27,7 +27,7 @@ jobs:
     - name: Change directory to 'app'
       run: |
         pwd
-        cd /home/runner/work/C-est-pas-Versailles-ici/C-est-pas-Versailles-ici/app |
+        cd /home/runner/work/C-est-pas-Versailles-ici/C-est-pas-Versailles-ici/app
         pwd
 
     - name: Install dependencies
