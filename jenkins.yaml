@@ -1,0 +1,37 @@
+jenkins:
+
+  systemMessage: "Welcome"
+
+  authorizationStrategy:
+    roleBased:
+      roles:
+        global:
+          - name: "admin"
+            description: "Jenkins administrators"
+            permissions:
+              - "Overall/Administer"
+            entries:
+              - user: "admin"
+          - name: "readonly"
+            description: "Read-only users"
+            permissions:
+              - "Overall/Read"
+              - "Job/Read"
+            entries:
+              - user: "anonymous"
+
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+
+        - id: "admin"
+          password: salut
+          name: "administrators"
+
+security:
+  globalJobDslSecurityConfiguration:
+    useScriptSecurity: false
+
+jobs:
+  - file: "/var/jenkins_home/job_dsl.groovy"
