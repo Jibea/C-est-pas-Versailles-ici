@@ -23,18 +23,19 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
-      
-    - name: Change directory to 'app'
-      run: |
-        pwd
-        cd /home/runner/work/C-est-pas-Versailles-ici/C-est-pas-Versailles-ici/app
-        pwd
+        
 
     - name: Install dependencies
-      run: npm install
+      run: |
+        cd /home/runner/work/C-est-pas-Versailles-ici/C-est-pas-Versailles-ici/app
+        npm install
 
     - name: Build
-      run: npm run build --if-present
+      run: |
+        cd /home/runner/work/C-est-pas-Versailles-ici/C-est-pas-Versailles-ici/app
+        npm run build --if-present
 
     - name: Run tests
-      run: npm test
+      run: |
+        cd /home/runner/work/C-est-pas-Versailles-ici/C-est-pas-Versailles-ici/app
+        npm test
