@@ -5,8 +5,8 @@ import TopBar from '@/components/TopBar.vue';
 
 <template>
   <TopBar title="Home"/>
-  <div class="home">
+  <!-- <div class="home">
     <img alt="Vue logo" src="../assets/logo.png">
     <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
-  </div>
+  </div> -->
 </template>
