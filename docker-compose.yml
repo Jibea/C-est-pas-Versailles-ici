@@ -1,5 +1,6 @@
-version: '3'
+version: '3.8'
 services:
+
   vue-app-dev:
     build:
       context: .
@@ -9,3 +10,11 @@ services:
       - '/app/node_modules'
     ports:
       - "8080:8080"
+
+  jenkins:
+    build:
+      context: .
+      dockerfile: jenkins.Dockerfile
+    ports:
+      - "5000:8080"
+    restart: always
