@@ -4,11 +4,14 @@
 
 <template>
     <Slide>
-        <a id="home" href="#">
+        <a id="home" href="/">
             <span>Home</span>
         </a>
         <a id="edit" href="#">
             <span>Edit</span>
+        </a>
+        <a id="about" href="/about">
+            <span>About</span>
         </a>
     </Slide>
 </template>
