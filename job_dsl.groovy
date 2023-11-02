@@ -21,6 +21,7 @@ freeStyleJob('Tools/SEED') {
     parameters {
         stringParam('GITHUB_NAME', '', 'GitHub repository owner/repo_name (e.g.: "EpitechIT31000/chocolatine")')
         stringParam('DISPLAY_NAME', '', 'Display name for the job')
+        stringParam('SSH_KEY_CREDENTIALS', '', 'SSH Key Credentials ID in Jenkins')
     }
     steps {
         dsl {
@@ -28,11 +29,17 @@ freeStyleJob('Tools/SEED') {
                 freeStyleJob(DISPLAY_NAME) {
                     wrappers {
                         preBuildCleanup {
-                                deleteDirectories()
+                            deleteDirectories()
                         }
                     }
                     scm {
-                        github (GITHUB_NAME)
+                        git {
+                            remote {
+                                url('git@github.com:${GITHUB_NAME}.git')
+                                credentials(SSH_KEY_CREDENTIALS)
+                            }
+                            branches('*/main')
+                        }
                     }
                     triggers {
                         pollSCM {
