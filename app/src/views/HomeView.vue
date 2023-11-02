@@ -15,16 +15,17 @@ onMounted(() => {
         rooms.value = JSON.parse(savedList);
     }
 });
-onBeforeUnmount(() => {
+function onSave() {
     localStorage.setItem("draggable-list", JSON.stringify(rooms.value));
-});
+}
 </script>
 
 <template>
     <TopBar title="Home"/>
-    <draggable v-model="rooms" :animation="300" >
+    <draggable v-model="rooms" :animation="300">
         <template #item="{ element: room }">
             <RoomButton  :roomName="room.name" :lampsLit="room.lights" ></RoomButton>
         </template>
     </draggable>
+    <button @click="onSave">Save</button>
 </template>
