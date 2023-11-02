@@ -1,16 +1,23 @@
 
 <script lang="ts" setup name="HomeView">
-    import { ref } from 'vue';
+    import { ref, onMounted, onBeforeUnmount } from "vue";
     import TopBar from '@/components/TopBar.vue';
     import RoomButton from '@/components/RoomButton.vue';
     import draggable from 'vuedraggable'
 const rooms = ref([
-  {name: 'Hamburger', lights: false},
-  {name: 'Pizza', lights: false},
-  {name: 'Spaghetti', lights: true},
-  {name: 'Tacos', lights: false},
-  {name: 'Teriyaki Chicken', lights: false}
+    {name: 'Poudlard', lights: false},
+    {name: 'Vogons', lights: false},
+    {name: 'Gotham', lights: true},
 ]);
+onMounted(() => {
+    const savedList = localStorage.getItem("draggable-list");
+    if (savedList) {
+        rooms.value = JSON.parse(savedList);
+    }
+});
+onBeforeUnmount(() => {
+    localStorage.setItem("draggable-list", JSON.stringify(rooms.value));
+});
 </script>
 
 <template>
