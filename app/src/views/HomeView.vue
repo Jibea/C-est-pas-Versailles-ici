@@ -4,20 +4,20 @@
     import TopBar from '@/components/TopBar.vue';
     import RoomButton from '@/components/RoomButton.vue';
     import draggable from 'vuedraggable'
-const meals = ref([
-  'Hamburger',
-  'Pizza',
-  'Spaghetti',
-  'Tacos',
-  'Teriyaki Chicken',
+const rooms = ref([
+  {name: 'Hamburger', lights: false},
+  {name: 'Pizza', lights: false},
+  {name: 'Spaghetti', lights: true},
+  {name: 'Tacos', lights: false},
+  {name: 'Teriyaki Chicken', lights: false}
 ]);
 </script>
 
 <template>
     <TopBar title="Home"/>
-    <draggable v-model="meals" :animation="300" >
-        <template #item="{ element: meal }">
-            <RoomButton  :roomName="meal" ></RoomButton>
+    <draggable v-model="rooms" :animation="300" >
+        <template #item="{ element: room }">
+            <RoomButton  :roomName="room.name" :lampsLit="room.lights" ></RoomButton>
         </template>
     </draggable>
 </template>
