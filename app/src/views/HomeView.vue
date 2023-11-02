@@ -1,6 +1,6 @@
 
 <script lang="ts" setup name="HomeView">
-    import { ref, onMounted, onBeforeUnmount } from "vue";
+    import { ref, onMounted } from "vue";
     import TopBar from '@/components/TopBar.vue';
     import RoomButton from '@/components/RoomButton.vue';
     import draggable from 'vuedraggable'
@@ -10,7 +10,7 @@ const rooms = ref([
     {name: 'Vogons', lights: false},
     {name: 'Gotham', lights: true},
 ]);
-let isInput = ref(false);
+let isEdit = ref(false);
 let message = ref("");
 
 onMounted(() => {
@@ -31,27 +31,31 @@ const addRoom = () => {
     rooms.value.push(newItem);
 }
 const changeMod = () => {
-    if (isInput.value) {
-        isInput.value = false
-    } else {
-        isInput.value = true
-        message.value = ""
+    if (isEdit.value) {
+        isEdit.value = false
         onSave()
+    } else {
+        isEdit.value = true
+        message.value = ""
+    }
+}
+const onDragStart = (event) => {
+    if (!isEdit.value) {
+        event.preventDefault();
     }
 }
 </script>
 
 <template>
     <TopBar title="Home"/>
-    <draggable v-model="rooms" :animation="300">
+    <draggable v-model="rooms" :animation="300" @dragstart="onDragStart">
         <template #item="{ element: room }">
             <RoomButton  :roomName="room.name" :lampsLit="room.lights" ></RoomButton>
         </template>
     </draggable>
     <button @click="changeMod">Edit mode</button>
-    <div v-if="isInput">
-        <input v-model="message" placeholder="edit me"/>
+    <div v-if="isEdit">
+        <input v-model="message" placeholder="Name of new room"/>
         <button @click="addRoom">Add a room</button>
-        <button @click="onSave">Save</button>
     </div>
 </template>
