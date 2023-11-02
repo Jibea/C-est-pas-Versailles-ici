@@ -2,7 +2,7 @@
 import { computed, defineProps } from 'vue';
 
     const props = defineProps({
-      roomName: String,
+      roomName: { type: String, required: true },
       lampsLit: Boolean,
     });
 
