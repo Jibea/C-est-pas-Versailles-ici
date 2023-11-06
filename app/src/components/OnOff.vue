@@ -1,7 +1,7 @@
 <script setup lang="ts">
     import { defineProps } from 'vue';
 
-    //TODO il faudra chnager le msg par l'id de la lampe par exemple
+    //TODO il faudra get le nom de la pièce
     defineProps({
         msg: String,
     });

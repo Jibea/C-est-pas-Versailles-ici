@@ -1,15 +1,9 @@
-<template>
-  <div class="home">
-    <h1>Work in progress</h1>
-  </div>
-</template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-
-export default defineComponent({
-  name: 'HomeView',
-  components: {
-  },
-});
+<script lang="ts" setup name="HomeView">
+    import TopBar from '@/components/TopBar.vue';
 </script>
+
+<template>
+    <TopBar title="Home"/>
+    <h1>This is the Home page</h1>
+</template>
