@@ -9,6 +9,8 @@ RUN jenkins-plugin-cli --plugins role-strategy
 RUN jenkins-plugin-cli --plugins credentials
 RUN jenkins-plugin-cli --plugins github
 RUN jenkins-plugin-cli --plugins ws-cleanup
+RUN jenkins-plugin-cli --plugins workflow-aggregator:596.v8c21c963d92d
+
 
 ENV JAVA_OPTS="-Djenkins.install.runSetupWizard=false"
 

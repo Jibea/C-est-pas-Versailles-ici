@@ -16,7 +16,7 @@ jenkins:
             description: "Read-only users"
             permissions:
               - "Overall/Read"
-              - "Job/Read"
+              - "Job/Write"
             entries:
               - user: "anonymous"
 
