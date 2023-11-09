@@ -25,6 +25,28 @@ const getGroups = async () => {
     }
 }
 
+const removeGroup = async (groupId: string) => {
+    try {
+        const response = await axios.delete(`http://${gatewayIP}/api/${APIKey}/groups/${groupId}`);
+        console.log('Response: ', response);
+        getGroups();
+    } catch (error) {
+        console.error('Error API: ', error);
+    }
+}
+
+const addGroup = async (groupName: string) => {
+    try {
+        const response = await axios.post(`http://${gatewayIP}/api/${APIKey}/groups`, {
+            name: groupName
+        });
+        console.log('Response: ', response);
+        getGroups();
+    } catch (error) {
+        console.error('Error API: ', error);
+    }
+}
+
 </script>
 
 <template>
@@ -35,8 +57,11 @@ const getGroups = async () => {
     <ul>
       <li v-for="(group, groupId) in groups" :key="groupId" class="group-item">
         {{ group.name }}
+        <button @click="removeGroup(groupId)">Remove</button>
       </li>
     </ul>
+    <input type="text" v-model="groupName" />
+    <button @click="addGroup(groupName)">Add</button>
   </div>
 </template>
 
