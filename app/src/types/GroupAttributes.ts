@@ -1,4 +1,4 @@
-export interface Group {
+export interface GroupAttributes {
     action: {
       bri: number;
       ct: number;
