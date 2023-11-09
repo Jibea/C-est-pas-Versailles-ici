@@ -36,39 +36,103 @@ const removeGroup = async (groupId: string) => {
     }
 }
 
-const addGroup = async (groupName: string) => {
-    try {
-        const response = await axios.post(`http://${gatewayIP}/api/${APIKey}/groups`, {
-            name: groupName
-        });
-        console.log('Response: ', response);
-        getGroups();
-    } catch (error) {
-        console.error('Error API: ', error);
-    }
-}
+const addGroup = async () => {
+  try {
+    const response = await axios.post(`http://${gatewayIP}/api/${APIKey}/groups`, {
+      name: groupName.value,
+    });
+    console.log('Response: ', response);
+    getGroups();
+    groupName.value = '';
+  } catch (error) {
+    console.error('Error API: ', error);
+  }
+};
 
 </script>
 
 <template>
-  <div>
+  <div class="room-view">
     <h1>Room View</h1>
-    <p>Room name: {{ roomName }}</p>
-    <h2>Groups</h2>
-    <ul>
-      <li v-for="(group, groupId) in groups" :key="groupId" class="group-item">
-        {{ group.name }}
-        <button @click="removeGroup(groupId)">Remove</button>
-      </li>
-    </ul>
-    <input type="text" v-model="groupName" />
-    <button @click="addGroup(groupName)">Add</button>
+    
+    <section class="group-section">
+      <h2>Groups</h2>
+      <ul class="group-list">
+        <li v-for="(group, groupId) in groups" :key="groupId" class="group-item">
+          <span class="group-name">{{ group.name }}</span>
+          <button @click="removeGroup(groupId)" class="remove-button">Remove</button>
+        </li>
+      </ul>
+    </section>
+    
+    <section class="add-group-section">
+      <input v-model="groupName" type="text" placeholder="Enter group name" class="group-input" />
+      <button @click="addGroup" class="add-button">Add</button>
+    </section>
+
   </div>
 </template>
 
 <style scoped>
+.room-view {
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+}
+
+.room-name {
+  font-size: 1.2em;
+  margin-bottom: 10px;
+}
+
+.group-section {
+  margin-bottom: 20px;
+}
+
+.group-list {
+  list-style-type: none;
+  padding: 0;
+}
+
 .group-item {
-    list-style-type: none;
-    margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.group-name {
+  flex-grow: 1;
+}
+
+.remove-button {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.add-group-section {
+  display: flex;
+  gap: 10px;
+}
+
+.group-input {
+  flex-grow: 1;
+  padding: 8px;
+}
+
+.add-button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
 }
 </style>
