@@ -54,15 +54,23 @@ const addGroup = async () => {
 <template>
   <div class="room-view">
     <h1>Room View</h1>
+    <p class="room-name">Room name: {{ roomName }}</p>
     
     <section class="group-section">
       <h2>Groups</h2>
+
       <ul class="group-list">
         <li v-for="(group, groupId) in groups" :key="groupId" class="group-item">
-          <span class="group-name">{{ group.name }}</span>
+
+          <router-link :to="{ name: 'group', params: { groupId: groupId } }">
+            <span class="group-name">{{ group.name }}</span>
+          </router-link>
+    
           <button @click="removeGroup(groupId)" class="remove-button">Remove</button>
+
         </li>
       </ul>
+
     </section>
     
     <section class="add-group-section">
