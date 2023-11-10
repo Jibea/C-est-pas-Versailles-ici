@@ -6,6 +6,7 @@ import { GroupsResponse } from '@/types/GroupsResponse';
 
 const roomName = ref('');
 const gatewayIP = '127.17.0.2'
+const APIKey = "key";
 const groups = ref<GroupsResponse>({});
 const groupName = ref('');
 

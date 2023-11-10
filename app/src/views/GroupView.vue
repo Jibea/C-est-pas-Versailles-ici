@@ -6,6 +6,7 @@ import axios from 'axios';
 import Light from '@/types/Light';
 
 const gatewayIP = '127.17.0.2'
+const APIKey = "key";
 const router = useRouter();
 const groupId = decodeURIComponent(router.currentRoute.value.params.groupId);
 const group = ref<GroupAttributes>();
