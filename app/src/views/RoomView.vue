@@ -63,7 +63,7 @@ const addGroup = async () => {
       <ul class="group-list">
         <li v-for="(group, groupId) in groups" :key="groupId" class="group-item">
 
-          <router-link :to="{ name: 'group', params: { groupId: groupId } }">
+          <router-link :to="{ name: 'groupRoute', params: { groupId: groupId } }">
             <span class="group-name">{{ group.name }}</span>
           </router-link>
     
