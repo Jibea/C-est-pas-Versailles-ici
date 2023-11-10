@@ -8,7 +8,7 @@ export interface GroupAttributes {
       sat: number;
       xy: [number, number];
     };
-    devicemembership: string[];
+    devicemembership: string[];//peut être crée un type plus tard
     etag: string;
     hidden: boolean;
     id: string;
