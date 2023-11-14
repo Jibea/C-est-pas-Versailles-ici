@@ -16,7 +16,7 @@ import { computed, defineProps } from 'vue';
 </script>
 
 <template>
-  <router-link :to="'/room/' + roomName">
+  <router-link :to="{ name: 'roomRoute', params: { roomName: roomName } }">
     <button :class="['button', buttonClass]">
         {{ roomName }}
     </button>
