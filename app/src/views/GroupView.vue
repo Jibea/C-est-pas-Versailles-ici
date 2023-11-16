@@ -11,6 +11,7 @@ const router = useRouter();
 const groupId = decodeURIComponent(router.currentRoute.value.params.groupId);
 const group = ref<GroupAttributes>();
 const lights = ref<Light[]>([]);
+const selectedTab = ref('lights');
 
 onMounted(() => {
     getGroup();
@@ -42,6 +43,18 @@ const getLight = async (lightId: string) => {
     }
 }
 
+const showLights = () => {
+  selectedTab.value = 'lights';
+}
+
+const showScenes = () => {
+  selectedTab.value = 'scenes';
+}
+
+const editGroup = () => {
+  selectedTab.value = 'editGroup';
+}
+
 </script>
 
 <template>
@@ -49,15 +62,40 @@ const getLight = async (lightId: string) => {
   <div class="group-view">
     <h1>{{ group?.name }}</h1>
     <p class="group-id">Group ID: {{ group?.id }}</p>
-    <ul class="light-list">
-      <li v-for="light in lights" :key="light.id" class="light-item">
-        <div class="light-info">
-          <p class="light-name">{{ light.name }}</p>
-          <p class="light-state">{{ light.state.on ? 'On' : 'Off' }}</p>
-          <p class="light-manufacturer">Manufacturer: {{ light.manufacturername }}</p>
-        </div>
-      </li>
-    </ul>
+
+    <button @click="showLights">Show Lights</button>
+    <button @click="showScenes">Show Scenes</button>
+    <button @click="editGroup">Edit Group</button>
+
+    <!-- pour montrer les lights -->
+    <div v-if="selectedTab === 'lights'">
+      <ul class="light-list">
+        <li v-for="light in lights" :key="light.id" class="light-item">
+          <div class="light-info">
+            <p class="light-name">{{ light.name }}</p>
+            <p class="light-state">{{ light.state.on ? 'On' : 'Off' }}</p>
+            <p class="light-manufacturer">Manufacturer: {{ light.manufacturername }}</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- pour montrer les scenes -->
+    <div v-if="selectedTab === 'scenes'">
+      <ul class="scene-list">
+        <li v-for="scene in group?.scenes" :key="scene.id" class="scene-item">
+          <div class="scene-info">
+            <p class="scene-name">{{ scene.name }}</p>
+            <p class="scene-id">Scene ID: {{ scene.id }}</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- pour edit les groupes -->
+    <div v-if="selectedTab === 'editGroup'">
+    </div>
+
   </div>
     
 </template>
@@ -111,5 +149,45 @@ h1 {
 .light-manufacturer {
   font-size: 14px;
   color: #888;
+}
+
+button {
+  padding: 10px;
+  margin: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #3f473f;
+  color: white;
+  border: none;
+  border-radius: 4px;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+button:active {
+  background-color: #54d854;
+}
+
+ul.light-list {
+  list-style: none;
+  padding: 0;
+}
+
+.scene-list {
+  list-style: none;
+  padding: 0;
+}
+
+.scene-item {
+  border: 1px solid #ddd;
+  margin: 5px 0;
+  padding: 10px;
+}
+
+.scene-info {
+  display: flex;
+  justify-content: space-between;
 }
 </style>
