@@ -52,8 +52,11 @@ const addGroup = async () => {
 };
 
 const filteredGroups = computed(() => {
+  const normalizedRoomName = roomName.value.toLowerCase();
+
   return Object.entries(groups.value).filter(([groupId, group]: [string, Group]) => {
-    return group.name.toLowerCase().includes(roomName.value.toLowerCase());
+    const normalizedGroupName = group.name.toLowerCase();
+    return normalizedGroupName.startsWith(`${normalizedRoomName}-`);
   });
 });
 
