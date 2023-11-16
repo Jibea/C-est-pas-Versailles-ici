@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed, defineProps } from 'vue';
+import { defineEmits } from 'vue';
 
+    const emit = defineEmits(['remove'])
     const props = defineProps({
       roomName: { type: String, required: true },
       lampsLit: Boolean,
@@ -13,6 +15,10 @@ import { computed, defineProps } from 'vue';
       };
     });
 
+    const removeGroup = () => {
+      emit('remove', true);
+    }
+
 </script>
 
 <template>
@@ -21,6 +27,7 @@ import { computed, defineProps } from 'vue';
         {{ roomName }}
     </button>
   </router-link>
+  <button @click="removeGroup()" class="remove-button">Remove</button>
 </template>
 
 <style scoped>
@@ -40,6 +47,15 @@ import { computed, defineProps } from 'vue';
   padding: 50px;
   margin: 20px;
   font-size: 1.5em;
+}
+
+.remove-button {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 8px;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 </style>

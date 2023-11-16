@@ -44,13 +44,16 @@ const onDragStart = (event) => {
         event.preventDefault();
     }
 }
+const onClickRemove = (value) => {
+    console.log("receive" + value);
+}
 </script>
 
 <template>
     <TopBar title="Home"/>
     <draggable v-model="rooms" :animation="300" @dragstart="onDragStart">
         <template #item="{ element: room }">
-            <RoomButton  :roomName="room.name" :lampsLit="room.lights" ></RoomButton>
+            <RoomButton @remove="onClickRemove"  :roomName="room.name" :lampsLit="room.lights" ></RoomButton>
         </template>
     </draggable>
     <button @click="changeMod">Edit mode</button>
