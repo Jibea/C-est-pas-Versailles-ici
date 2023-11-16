@@ -72,7 +72,7 @@ const editGroup = () => {
       <ul class="light-list">
         <li v-for="light in lights" :key="light.id" class="light-item">
           <div class="light-info">
-            <p class="light-name">{{ light.name }}</p>
+            <p class="item-name">{{ light.name }}</p>
             <p class="light-state">{{ light.state.on ? 'On' : 'Off' }}</p>
             <p class="light-manufacturer">Manufacturer: {{ light.manufacturername }}</p>
           </div>
@@ -85,8 +85,8 @@ const editGroup = () => {
       <ul class="scene-list">
         <li v-for="scene in group?.scenes" :key="scene.id" class="scene-item">
           <div class="scene-info">
-            <p class="scene-name">{{ scene.name }}</p>
-            <p class="scene-id">Scene ID: {{ scene.id }}</p>
+            <p class="item-name">{{ scene.name }}</p>
+            <p>Scene ID: {{ scene.id }}</p>
           </div>
         </li>
       </ul>
@@ -134,7 +134,7 @@ h1 {
   flex-direction: column;
 }
 
-.light-name {
+.item-name {
   font-size: 18px;
   font-weight: bold;
   margin-bottom: 5px;
