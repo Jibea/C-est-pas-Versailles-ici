@@ -93,7 +93,11 @@ const editGroup = () => {
     </div>
 
     <!-- pour edit les groupes -->
-    <div v-if="selectedTab === 'editGroup'">
+    <div v-if="selectedTab === 'editGroup'" class="edit-group-section">
+      <button>Scene Editor</button>
+      <button>Manage Lights</button>
+      <button>Schedule</button>
+      <button>Sensor Control</button>
     </div>
 
   </div>
@@ -190,4 +194,29 @@ ul.light-list {
   display: flex;
   justify-content: space-between;
 }
+.edit-group-section {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+
+.edit-group-section button {
+  padding: 15px 20px;
+  font-size: 18px;
+  cursor: pointer;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+
+.edit-group-section button:hover {
+  background-color: #0056b3;
+}
+
+.edit-group-section button:active {
+  background-color: #004080;
+}
+
 </style>
