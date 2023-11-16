@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import axios from 'axios';
 import { GroupsResponse } from '@/types/GroupsResponse';
+import { Group } from '@/types/Group';
 
 const roomName = ref('');
 const gatewayIP = '127.17.0.2'
@@ -50,6 +51,12 @@ const addGroup = async () => {
   }
 };
 
+const filteredGroups = computed(() => {
+  return Object.entries(groups.value).filter(([groupId, group]: [string, Group]) => {
+    return group.name.toLowerCase().includes(roomName.value.toLowerCase());
+  });
+});
+
 </script>
 
 <template>
@@ -61,7 +68,7 @@ const addGroup = async () => {
       <h2>Groups</h2>
 
       <ul class="group-list">
-        <li v-for="(group, groupId) in groups" :key="groupId" class="group-item">
+        <li v-for="([groupId, group]) in filteredGroups" :key="groupId" class="group-item">
 
           <router-link :to="{ name: 'groupRoute', params: { groupId: groupId } }">
             <span class="group-name">{{ group.name }}</span>
