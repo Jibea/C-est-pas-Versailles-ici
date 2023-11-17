@@ -55,6 +55,8 @@ const getLight = async (lightId: string) => {
           <p class="light-name">{{ light.name }}</p>
           <p class="light-state">{{ light.state.on ? 'On' : 'Off' }}</p>
           <p class="light-manufacturer">Manufacturer: {{ light.manufacturername }}</p>
+          <p class="light-manufacturer">Model: {{ light.modelid }}</p>
+          <p class="light-manufacturer">Unique ID: {{ light.uniqueid }}</p>
         </div>
       </li>
     </ul>
