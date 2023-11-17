@@ -114,13 +114,16 @@ const renameGroup = async () => {
       <ul class="light-list">
         <li v-for="light in lights" :key="light.id" class="light-item">
           <div class="light-info">
-            <p class="item-name">{{ light.name }}</p>
+            <p class="light-name">{{ light.name }}</p>
             <p class="light-state">{{ light.state.on ? 'On' : 'Off' }}</p>
             <p class="light-manufacturer">Manufacturer: {{ light.manufacturername }}</p>
+            <p class="light-manufacturer">Model: {{ light.modelid }}</p>
+            <p class="light-manufacturer">Unique ID: {{ light.uniqueid }}</p>
           </div>
         </li>
       </ul>
     </div>
+
 
     <!-- pour montrer les scenes -->
     <div v-if="selectedTab === 'scenes'">
