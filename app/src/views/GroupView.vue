@@ -92,7 +92,7 @@ const renameGroup = async () => {
       <span>{{ group?.name }}</span>
       <font-awesome-icon
         :icon="['fas', 'pen']"
-        style="color: #706d74; cursor: pointer;"
+        style="color: #706d74; cursor: pointer; margin-left: 10px;"
         @click="openRenameDialog"
       />
     </h1>
