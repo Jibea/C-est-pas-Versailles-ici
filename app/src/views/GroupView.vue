@@ -94,10 +94,23 @@ const editGroup = () => {
 
     <!-- pour edit les groupes -->
     <div v-if="selectedTab === 'editGroup'" class="edit-group-section">
-      <button>Scene Editor</button>
-      <button>Manage Lights</button>
-      <button>Schedule</button>
-      <button>Sensor Control</button>
+
+      <router-link :to="{ name: 'editSceneRoute', params: { groupId: group?.id } }">
+        <button>Scene Editor</button>
+      </router-link>
+
+      <router-link :to="{ name: 'manageLightsRoute', params: { groupId: group?.id } }">
+        <button>Manage Lights</button>
+      </router-link>
+
+      <router-link :to="{ name: 'scheduleRoute', params: { groupId: group?.id } }">
+        <button>Schedule</button>
+      </router-link>
+      
+      <router-link :to="{ name: 'sensorsControlRoute', params: { groupId: group?.id } }">
+        <button>Sensor Control</button>
+      </router-link>
+        
     </div>
 
   </div>
