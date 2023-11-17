@@ -66,7 +66,7 @@ const filteredGroups = computed(() => {
   <div class="room-view">
     <h1>Room View</h1>
     <p class="room-name">Room name: {{ roomName }}</p>
-    
+
     <section class="group-section">
       <h2>Groups</h2>
 
