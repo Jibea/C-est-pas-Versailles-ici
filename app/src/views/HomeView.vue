@@ -10,6 +10,7 @@ const rooms = ref([
     {name: 'Vogons', lights: false},
     {name: 'Gotham', lights: true},
 ]);
+const title = ref('Home')
 let isEdit = ref(false);
 let message = ref("");
 
@@ -47,13 +48,13 @@ const onDragStart = (event) => {
 </script>
 
 <template>
-    <TopBar title="Home"/>
+    <TopBar :title="title"/>
     <draggable v-model="rooms" :animation="300" @dragstart="onDragStart">
         <template #item="{ element: room }">
             <RoomButton  :roomName="room.name" :lampsLit="room.lights" ></RoomButton>
         </template>
     </draggable>
-    <button @click="changeMod">Edit mode</button>
+    <button v-if="$route.path === '/aymeric'" @click="changeMod">Edit mode</button>
     <div v-if="isEdit">
         <input v-model="message" placeholder="Name of new room"/>
         <button @click="addRoom">Add a room</button>
