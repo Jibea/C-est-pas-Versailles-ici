@@ -5,13 +5,9 @@
     import RoomButton from '@/components/RoomButton.vue';
     import draggable from 'vuedraggable'
 
-const rooms = ref([
-    {name: 'Poudlard', lights: false},
-    {name: 'Vogons', lights: false},
-    {name: 'Gotham', lights: true},
-]);
+const rooms = ref();
 let isEdit = ref(false);
-let message = ref("");
+const message = ref("");
 
 onMounted(() => {
     // TODO get tous les groupes des rooms dans l'api
@@ -20,6 +16,7 @@ onMounted(() => {
         rooms.value = JSON.parse(savedList);
     }
 });
+
 const onSave = () => {
     // TODO save in api new group of room
     localStorage.setItem("draggable-list", JSON.stringify(rooms.value));
@@ -30,6 +27,7 @@ const addRoom = () => {
     const newItem = { name: newRoom, lights: false };
     rooms.value.push(newItem);
 }
+
 const changeMod = () => {
     if (isEdit.value) {
         isEdit.value = false
@@ -39,14 +37,22 @@ const changeMod = () => {
         message.value = ""
     }
 }
+
 const onDragStart = (event) => {
     if (!isEdit.value) {
         event.preventDefault();
     }
 }
+
 const onClickRemove = (value) => {
-    console.log("receive" + value);
+    const roomIndex = rooms.value.findIndex(room => room.name === value);
+
+    if (roomIndex !== -1) {
+        rooms.value.splice(roomIndex, 1);
+        localStorage.setItem("draggable-list", JSON.stringify(rooms.value));
+    }
 }
+
 </script>
 
 <template>

@@ -16,7 +16,7 @@ import { defineEmits } from 'vue';
     });
 
     const removeGroup = () => {
-      emit('remove', true);
+      emit('remove', props.roomName, props.lampsLit);
     }
 
 </script>
@@ -27,7 +27,7 @@ import { defineEmits } from 'vue';
         {{ roomName }}
     </button>
   </router-link>
-  <button @click="removeGroup()" class="remove-button">Remove</button>
+  <button @click="removeGroup()" class="remove-button">-</button>
 </template>
 
 <style scoped>
@@ -51,10 +51,14 @@ import { defineEmits } from 'vue';
 
 .remove-button {
   background-color: #e74c3c;
+  position: absolute;
+  margin-left: -35px;
+  margin-top: 5px;
   color: white;
+  width: 30px;
+  height: 30px;
   border: none;
-  padding: 8px;
-  border-radius: 4px;
+  border-radius: 50%;
   cursor: pointer;
 }
 
