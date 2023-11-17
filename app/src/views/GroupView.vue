@@ -12,16 +12,20 @@ const groupId = decodeURIComponent(router.currentRoute.value.params.groupId);
 const group = ref<GroupAttributes>();
 const lights = ref<Light[]>([]);
 const selectedTab = ref('lights');
+const renameDialogOpen = ref(false);
+const newGroupName = ref('');
 
 onMounted(() => {
     getGroup();
 });
 
 const getGroup = async () => {
-    try {
+  try {
+        lights.value = [];
         const response = await axios.get(`http://${gatewayIP}/api/${APIKey}/groups/${groupId}`);
         group.value = response.data;
         console.log('Group data: ', response.data);
+
         if (group.value?.lights) {
             group.value.lights.forEach((lightId: string) => {
                 getLight(lightId);
@@ -55,17 +59,55 @@ const editGroup = () => {
   selectedTab.value = 'editGroup';
 }
 
+const openRenameDialog = () => {
+  renameDialogOpen.value = true;
+}
+
+const cancelRename = () => {
+  renameDialogOpen.value = false;
+  newGroupName.value = '';
+}
+
+const renameGroup = async () => {
+  try {
+    const response = await axios.put(
+      `http://${gatewayIP}/api/${APIKey}/groups/${groupId}`,
+      { name: newGroupName.value }
+    );
+    group.value = response.data;
+    renameDialogOpen.value = false;
+    newGroupName.value = '';
+    await getGroup();
+  } catch (error) {
+    console.error('Error API: ', error);
+  }
+}
+
 </script>
 
 <template>
 
   <div class="group-view">
-    <h1>{{ group?.name }}</h1>
+    <h1>
+      <span>{{ group?.name }}</span>
+      <font-awesome-icon
+        :icon="['fas', 'pen']"
+        style="color: #706d74; cursor: pointer;"
+        @click="openRenameDialog"
+      />
+    </h1>
     <p class="group-id">Group ID: {{ group?.id }}</p>
 
     <button @click="showLights">Show Lights</button>
     <button @click="showScenes">Show Scenes</button>
     <button @click="editGroup">Edit Group</button>
+
+    <!-- dialogue pour rename le groupe -->
+    <div v-if="renameDialogOpen" class="rename-dialog">
+      <input v-model="newGroupName" type="text" placeholder="Enter new group name" />
+      <button @click="cancelRename">Cancel</button>
+      <button @click="renameGroup">Rename</button>
+    </div>
 
     <!-- pour montrer les lights -->
     <div v-if="selectedTab === 'lights'">
@@ -118,6 +160,7 @@ const editGroup = () => {
 </template>
 
 <style scoped>
+
 .group-view {
   max-width: 600px;
   margin: 0 auto;
@@ -230,6 +273,18 @@ ul.light-list {
 
 .edit-group-section button:active {
   background-color: #004080;
+}
+
+.rename-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
 }
 
 </style>
