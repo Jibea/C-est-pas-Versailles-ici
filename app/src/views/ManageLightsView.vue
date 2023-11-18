@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
 import { GroupAttributes } from '@/types/GroupAttributes';
+import { LightsApiResponse } from '@/types/Light';
 import { Light } from '@/types/Light';
 
 const gatewayIP = '127.17.0.2'
@@ -11,27 +12,31 @@ const router = useRouter();
 const group = ref<GroupAttributes>();
 const lights = ref<Light[]>([]);
 const groupId = decodeURIComponent(router.currentRoute.value.params.groupId);
+const allLights = ref<LightsApiResponse>();
 
 onMounted(() => {
     getGroup();
+    getAllLights().then((response) => {
+        allLights.value = response;
+    });
 });
 
 const getGroup = async () => {
   try {
-        lights.value = [];
-        const response = await axios.get(`http://${gatewayIP}/api/${APIKey}/groups/${groupId}`);
-        group.value = response.data;
-        console.log('Group data: ', response.data);
+    lights.value = [];
+    const response = await axios.get(`http://${gatewayIP}/api/${APIKey}/groups/${groupId}`);
+    group.value = response.data;
+    console.log('Group data: ', response.data);
 
-        if (group.value?.lights) {
-            group.value.lights.forEach((lightId: string) => {
-                getLight(lightId);
-            });
-        }
-    } catch (error) {
-        console.error('Error API: ', error);
-    }
-}
+    const lightsInGroupIds = group.value?.lights || [];
+
+    lightsInGroupIds.forEach((lightId: string) => {
+      getLight(lightId);
+    });
+  } catch (error) {
+    console.error('Error API: ', error);
+  }
+};
 
 const getLight = async (lightId: string) => {
     try {
@@ -54,14 +59,48 @@ const removeLight = async (lightId: string) => {
     }
 }
 
+const getAllLights = async (): Promise<LightsApiResponse> => {
+  try {
+    const allLightsResponse = await axios.get(`http://${gatewayIP}/api/${APIKey}/lights`);
+
+    const lightsInGroupIds = group.value?.lights || [];
+
+    const lightsNotInGroup = Object.keys(allLightsResponse.data)
+      .filter(lightId => !lightsInGroupIds.includes(lightId))
+      .reduce((result, lightId) => {
+        result[lightId] = allLightsResponse.data[lightId];
+        return result;
+      }, {});
+
+    return lightsNotInGroup;
+  } catch (error) {
+    console.error('Error API: ', error);
+  }
+};
+
 </script>
 
 <template>
   <div class="room-view">
     <h1>Manage Lights View</h1>
 
+    <h1>Lights in the Group</h1>
     <ul class="light-list">
       <li v-for="light in lights" :key="light.id" class="light-item">
+        <div class="light-info">
+          <p class="light-name">{{ light.name }}</p>
+          <p class="light-state">{{ light.state.on ? 'On' : 'Off' }}</p>
+          <p class="light-manufacturer">Manufacturer: {{ light.manufacturername }}</p>
+          <p class="light-manufacturer">Model: {{ light.modelid }}</p>
+          <p class="light-manufacturer">Unique ID: {{ light.uniqueid }}</p>
+        </div>
+        <button @click="removeLight(light.id)">Remove</button>
+      </li>
+    </ul>
+
+    <h2>All Lights</h2>
+    <ul class="light-list">
+      <li v-for="light in allLights" :key="light.id" class="light-item">
         <div class="light-info">
           <p class="light-name">{{ light.name }}</p>
           <p class="light-state">{{ light.state.on ? 'On' : 'Off' }}</p>
