@@ -83,13 +83,26 @@ const getAllLights = async (): Promise<LightsApiResponse> => {
 
 const addLightToGroup = async (lightId: number) => {
   try {
-    const response = await axios.put(`http://${gatewayIP}/api/${APIKey}/groups/${groupId}/lights/${lightId}`);
-    console.log('Light added: ', response.data);
+    const currentGroup = await axios.get(`http://${gatewayIP}/api/${APIKey}/groups/${groupId}`);
+    const groupAttributes = currentGroup.data;
+
+    if (!groupAttributes.lights) {
+      groupAttributes.lights = [];
+    }
+
+    groupAttributes.lights.push(lightId);
+    const response = await axios.put(`http://${gatewayIP}/api/${APIKey}/groups/${groupId}`, groupAttributes);
+    console.log('Light added to group: ', response.data);
     await getGroup();
+    await getAllLights().then((response) => {
+        allLights.value = response;
+    });
+
   } catch (error) {
     console.error('Error API: ', error);
   }
 }
+
 
 const renameLight = async (lightId: number, newName: string) => {
   console.log('Renaming light: ', lightId, newName);
@@ -139,8 +152,18 @@ const cancelRename = () => {
           <p class="light-manufacturer">Model: {{ light.modelid }}</p>
           <p class="light-manufacturer">Unique ID: {{ light.uniqueid }}</p>
         </div>
-        <button @click="removeLight(light.id)">Remove</button>
-        <button @click="openRenameDialog(light.id)">Rename</button>
+
+        <button @click="removeLight(light)">Remove</button>
+        <button @click="openRenameDialog(light)">Rename</button>
+      
+        <div v-if="renameDialogOpen" class="rename-dialog">
+          <label for="newLightName">Enter new name:</label>
+          <input v-model="newLightName" type="text" id="newLightName" class="rename-input"/>
+          <div class="button-container">
+            <button @click="console.log('Renaming light:', light); renameLight(light, newLightName)">Confirm</button>
+            <button @click="cancelRename">Cancel</button>
+          </div>
+        </div>
       </li>
     </ul>
 
