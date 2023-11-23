@@ -12,8 +12,8 @@ const rooms = ref([]);
 const route = useRoute();
 let isEdit = ref(false);
 const message = ref("");
-const gatewayIP = '10.29.125.27'
-const APIKey = "B159927C05";
+const gatewayIP = '10.29.125.176'
+const APIKey = "BE7CBC1E14";
 const groups = ref();
 // fait une map avec le nom de la groupe et son id pour pouvoir le supprimer
 const groupsMap = ref();
@@ -77,6 +77,7 @@ const addRoomAdmin = () => {
     })
         .then((response) => {
             console.log(response);
+            window.location.reload();
         }, (error) => {
             console.log(error);
         });
@@ -101,14 +102,13 @@ const onDragStart = (event) => {
 }
 
 const onClickRemoveAdmin = (value) => {
-    //TODO remove room from api
     console.log(value)
     const index = groupsMap.value.findIndex(room => room.name === value)
     const groupId = groupsMap.value[index].groupId
     axios.delete(`http://${gatewayIP}/api/${APIKey}/groups/${groupId}`)
         .then((response) => {
             console.log(response);
-            getGroups()
+            window.location.reload();
         }, (error) => {
             console.log(error);
         });
