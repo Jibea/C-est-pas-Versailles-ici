@@ -159,9 +159,11 @@ const cancelRename = () => {
       
         <div v-if="renameDialogOpen" class="rename-dialog">
           <label for="newLightName">Enter new name:</label>
-          <input v-model="newLightName" type="text" id="newLightName" />
-          <button @click="renameLight(lightId, newLightName)">Confirm</button>
-          <button @click="cancelRename">Cancel</button>
+          <input v-model="newLightName" type="text" id="newLightName" class="rename-input"/>
+          <div class="button-container">
+            <button @click="renameLight(lightId, newLightName)">Confirm</button>
+            <button @click="cancelRename">Cancel</button>
+          </div>
         </div>
       
       </li>
@@ -241,6 +243,37 @@ button:active {
   background-color: white;
   padding: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.rename-input {
+  color: #333;
+  border: 1px solid #ccc;
+  padding: 2px;
+  width: 50%;
+}
+
+.button-container {
+  margin-left: 10px;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.button-container button {
+  padding: 8px 16px;
+  background-color: #f31616;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 8px;
+}
+
+.button-container button:hover {
+  background-color: #45a049;
+}
+
+.button-container button:last-child {
+  margin-right: 10px;
 }
 
 </style>
