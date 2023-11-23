@@ -33,7 +33,7 @@ const getGroups = async () => {
 }
 
 
-const setupAdmin = async (savedList) => {
+const setupAdmin = async (savedList:any) => {
     if (window.location.pathname === '/aymeric') {
         await getGroups();
         console.log(groups.value)
