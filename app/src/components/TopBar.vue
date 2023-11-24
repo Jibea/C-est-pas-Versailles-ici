@@ -1,6 +1,6 @@
 <script lang="ts" setup name="TopBar">
     import { defineProps } from 'vue';
-    import BurgerComponent from '@/components/BurgerComponent.vue';
+    import HomeIcon from "@/components/HomeComponent.vue"
 
 const props = defineProps({
     title: { type: String, required: true },
@@ -9,7 +9,7 @@ const props = defineProps({
 
 <template>
     <div>
-        <BurgerComponent />
+        <HomeIcon />
         <h3>{{ props.title }}</h3>
     </div>
 </template>
