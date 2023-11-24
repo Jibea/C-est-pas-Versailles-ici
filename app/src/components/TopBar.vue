@@ -9,12 +9,18 @@ const props = defineProps({
 
 <template>
     <div>
-        <HomeIcon />
+        <HomeIcon class="home-style"/>
         <h3>{{ props.title }}</h3>
     </div>
 </template>
 
 <style scoped>
+.home-style {
+    margin-left: 40px;
+    margin-top: 20px;
+    float: left;
+    position: absolute;
+}
 div {
     background-color: gray;
     flex-direction: column;
