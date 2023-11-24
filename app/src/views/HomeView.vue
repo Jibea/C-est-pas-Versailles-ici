@@ -13,6 +13,7 @@ const route = useRoute();
 let isEdit = ref(false);
 const message = ref("");
 const gatewayIP = process.env.VUE_APP_GATEWAY_IP
+const hiddenPath = process.env.VUE_APP_HIDDEN_PATH
 const APIKey = process.env.VUE_APP_API_KEY;
 const groups = ref();
 // fait une map avec le nom de la groupe et son id pour pouvoir le supprimer
@@ -57,6 +58,7 @@ onMounted(() => {
     setupAdmin(savedList)
 });
 
+
 const onSave = () => {
     // TODO save in api new group of room
     localStorage.setItem("draggable-list", JSON.stringify(rooms.value));
@@ -83,7 +85,7 @@ const addRoomAdmin = () => {
 const changeMod = () => {
     if (isEdit.value) {
         isEdit.value = false
-        if (route.path !== '/aymeric') {
+        if (route.path !== `/${process.env.VUE_APP_HIDDEN_PATH}`) {
             onSave()
         }
     } else {
@@ -117,14 +119,14 @@ const onClickRemoveAdmin = (value) => {
     <TopBar title="Home"/>
     <draggable v-model="rooms" :animation="300" @dragstart="onDragStart">
         <template #item="{ element: room }">
-            <RoomButton v-if="$route.path === '/aymeric'" @remove="onClickRemoveAdmin"  :roomName="room.name" :lampsLit="room.lights" :admin="true"></RoomButton>
+            <RoomButton v-if="$route.path === '/' + hiddenPath" @remove="onClickRemoveAdmin"  :roomName="room.name" :lampsLit="room.lights" :admin="true"></RoomButton>
             <RoomButton v-else  :roomName="room.name" :lampsLit="room.lights" :admin="false"></RoomButton>
         </template>
     </draggable>
-    <button v-if="$route.path === '/aymeric'" @click="changeMod">Edit mode</button>
+    <button v-if="$route.path === '/' + hiddenPath " @click="changeMod">Edit mode</button>
     <div v-if="isEdit">
         <input v-model="message" placeholder="Name of new room"/>
-        <button v-if="$route.path === '/aymeric'" @click="addRoomAdmin">Add a room</button>
+        <button v-if="$route.path === '/' + hiddenPath" @click="addRoomAdmin">Add a room</button>
         <button v-else @click="addRoom">Add a room</button>
     </div>
 </template>
