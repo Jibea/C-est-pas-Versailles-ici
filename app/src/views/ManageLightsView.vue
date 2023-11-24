@@ -52,14 +52,28 @@ const getLight = async (lightId: string) => {
     }
 }
 
-const removeLight = async (lightId: string) => {
-    try {
-        const response = await axios.delete(`http://${gatewayIP}/api/${APIKey}/groups/${groupId}/lights/${lightId}`);
-        console.log('Light removed: ', response.data);
-        await getGroup();
-    } catch (error) {
-        console.error('Error API: ', error);
+const removeLight = async (lightId: number) => {
+  try {
+    const currentGroup = await axios.get(`http://${gatewayIP}/api/${APIKey}/groups/${groupId}`);
+    const groupAttributes = currentGroup.data;
+
+    if (groupAttributes.lights) {
+      groupAttributes.lights = groupAttributes.lights.filter(id => id !== lightId);
+
+      const response = await axios.put(`http://${gatewayIP}/api/${APIKey}/groups/${groupId}`, groupAttributes);
+      console.log('Light removed from group. API Response:', response.data);
+
+      await getGroup();
+      await getAllLights().then((response) => {
+        allLights.value = response;
+      });
+
+    } else {
+      console.warn('No lights in the group to remove.');
     }
+  } catch (error) {
+    console.error('Error API: ', error);
+  }
 }
 
 const getAllLights = async (): Promise<LightsApiResponse> => {
@@ -103,7 +117,6 @@ const addLightToGroup = async (lightId: number) => {
   }
 }
 
-
 const renameLight = async (lightId: number, newName: string) => {
   console.log('Renaming light: ', lightId, newName);
   try {
@@ -144,7 +157,7 @@ const cancelRename = () => {
 
     <h1>Lights in the Group</h1>
     <ul class="light-list">
-      <li v-for="light in lights" :key="light.id" class="light-item">
+      <li v-for="(light, lightId) in lights" :key="lightId" class="light-item">
         <div class="light-info">
           <p class="light-name">{{ light.name }}</p>
           <p class="light-state">{{ light.state.on ? 'On' : 'Off' }}</p>
@@ -152,19 +165,19 @@ const cancelRename = () => {
           <p class="light-manufacturer">Model: {{ light.modelid }}</p>
           <p class="light-manufacturer">Unique ID: {{ light.uniqueid }}</p>
         </div>
-
-        <button @click="removeLight(light)">Remove</button>
-        <button @click="openRenameDialog(light)">Rename</button>
+        {{ lightId }}
+        <button @click="removeLight(lightId)">Remove</button>
+        <button @click="openRenameDialog(lightId)">Rename</button>
       
         <div v-if="renameDialogOpen" class="rename-dialog">
           <label for="newLightName">Enter new name:</label>
           <input v-model="newLightName" type="text" id="newLightName" class="rename-input"/>
           <div class="button-container">
-            <button @click="console.log('Renaming light:', light); renameLight(light, newLightName)">Confirm</button>
+            <button @click="renameLight(lightId, newLightName)">Confirm</button>
             <button @click="cancelRename">Cancel</button>
           </div>
         </div>
-      </li>
+      </li> 
     </ul>
 
     <h2>All Lights</h2>
@@ -188,10 +201,8 @@ const cancelRename = () => {
             <button @click="cancelRename">Cancel</button>
           </div>
         </div>
-      
       </li>
     </ul>
-
   </div>
 </template>
 
