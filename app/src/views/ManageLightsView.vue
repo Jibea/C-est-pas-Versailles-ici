@@ -120,6 +120,7 @@ const renameLight = async (lightId: string, newName: string) => {
 
         renameDialogOpen.value = false;
         newLightName.value = '';
+        await getGroup();
         await getAllLights().then((response) => {
             allLights.value = response;
         });
