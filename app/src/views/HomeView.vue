@@ -16,7 +16,6 @@ const gatewayIP = process.env.VUE_APP_GATEWAY_IP
 const hiddenPath = process.env.VUE_APP_HIDDEN_PATH
 const APIKey = process.env.VUE_APP_API_KEY;
 const groups = ref();
-// fait une map avec le nom de la groupe et son id pour pouvoir le supprimer
 const groupsMap = ref();
 
 const getGroups = async () => {
@@ -26,6 +25,8 @@ const getGroups = async () => {
             const name = group.name;
             return { name, groupId };
         });
+        groupsMap.value = groupsMap.value.filter(group => !group.name.includes('-'));
+        console.log('Groups map: ', groupsMap.value);
         groups.value = response.data;
         console.log('Groups data: ', groups.value);
     } catch (error) {
@@ -38,13 +39,14 @@ const setupAdmin = async (savedList:any) => {
     await getGroups();
     console.log(groups.value)
     savedList.value =  groups.value;
-    const result = Object.values(savedList.value).map(obj => {
+    const result = ref(Object.values(savedList.value).map(obj => {
         const { name, state: { all_on } } = obj;
         return { name, all_on };
-    });
-    localStorage.setItem("draggable-list", JSON.stringify(result));
+    }));
+    result.value = result.value.filter(room => !room.name.includes('-'));
+    localStorage.setItem("draggable-list", JSON.stringify(result.value));
     if (savedList.value) {
-        rooms.value = result;
+        rooms.value = result.value;
     }
     if (localStorage.getItem("draggable-list")) {
         rooms.value = JSON.parse(localStorage.getItem("draggable-list"));
@@ -73,8 +75,7 @@ const addRoom = () => {
 const addRoomAdmin = () => {
     axios.post(`http://${gatewayIP}/api/${APIKey}/groups`, {
         name: message.value,
-    })
-        .then((response) => {
+    }).then((response) => {
             console.log(response);
             window.location.reload();
         }, (error) => {
