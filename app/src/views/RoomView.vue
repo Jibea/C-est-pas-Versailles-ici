@@ -6,8 +6,6 @@ import { GroupsResponse } from '@/types/GroupsResponse';
 import { Group } from '@/types/Group';
 
 const roomName = ref('');
-const gatewayIP = '127.17.0.2'
-const APIKey = "key";
 const groups = ref<GroupsResponse>({});
 const groupName = ref('');
 
@@ -20,7 +18,7 @@ onMounted(() => {
 
 const getGroups = async () => {
     try {
-        const response = await axios.get(`http://${gatewayIP}/api/${APIKey}/groups`);
+        const response = await axios.get(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/groups`);
         groups.value = response.data;
         console.log('Groups data: ', groups.value);
     } catch (error) {
@@ -30,7 +28,7 @@ const getGroups = async () => {
 
 const removeGroup = async (groupId: string) => {
     try {
-        const response = await axios.delete(`http://${gatewayIP}/api/${APIKey}/groups/${groupId}`);
+        const response = await axios.delete(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/groups/${groupId}`);
         console.log('Response: ', response);
         getGroups();
     } catch (error) {
@@ -40,7 +38,7 @@ const removeGroup = async (groupId: string) => {
 
 const addGroup = async () => {
   try {
-    const response = await axios.post(`http://${gatewayIP}/api/${APIKey}/groups`, {
+    const response = await axios.post(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/groups`, {
       name: groupName.value,
     });
     console.log('Response: ', response);

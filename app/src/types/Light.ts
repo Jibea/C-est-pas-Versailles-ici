@@ -21,3 +21,7 @@ interface Light {
   type: string;
   uniqueid: string;
 }
+
+interface LightsApiResponse {
+  [key: string]: Light;
+}
