@@ -5,8 +5,6 @@ import { GroupAttributes } from '@/types/GroupAttributes';
 import axios from 'axios';
 import Light from '@/types/Light';
 
-const gatewayIP = '127.17.0.2'
-const APIKey = "key";
 const router = useRouter();
 const groupId = decodeURIComponent(router.currentRoute.value.params.groupId);
 const group = ref<GroupAttributes>();
@@ -18,7 +16,7 @@ onMounted(() => {
 
 const getGroup = async () => {
     try {
-        const response = await axios.get(`http://${gatewayIP}/api/${APIKey}/groups/${groupId}`);
+        const response = await axios.get(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/groups/${groupId}`);
         group.value = response.data;
         console.log('Group data: ', response.data);
         if (group.value?.lights) {
@@ -33,7 +31,7 @@ const getGroup = async () => {
 
 const getLight = async (lightId: string) => {
     try {
-        const response = await axios.get(`http://${gatewayIP}/api/${APIKey}/lights/${lightId}`);
+        const response = await axios.get(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/lights/${lightId}`);
         const lightData = response.data;
         lights.value.push(lightData);
         console.log('Light data: ', lightData);
