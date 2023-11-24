@@ -12,8 +12,8 @@ const rooms = ref([]);
 const route = useRoute();
 let isEdit = ref(false);
 const message = ref("");
-const gatewayIP = '10.29.125.176'
-const APIKey = "BE7CBC1E14";
+const gatewayIP = process.env.VUE_APP_GATEWAY_IP
+const APIKey = process.env.VUE_APP_API_KEY;
 const groups = ref();
 // fait une map avec le nom de la groupe et son id pour pouvoir le supprimer
 const groupsMap = ref();
@@ -34,23 +34,20 @@ const getGroups = async () => {
 
 
 const setupAdmin = async (savedList:any) => {
-    if (window.location.pathname === '/aymeric') {
-        await getGroups();
-        console.log(groups.value)
-        savedList.value =  groups.value;
-        const result = Object.values(savedList.value).map(obj => {
-            const { name, state: { all_on } } = obj;
-            return { name, all_on };
-        });
-        localStorage.setItem("draggable-list", JSON.stringify(result));
-        if (savedList.value) {
-            rooms.value = result;
-        }
-    } else {
-        if (localStorage.getItem("draggable-list")) {
-            rooms.value = JSON.parse(localStorage.getItem("draggable-list"));
-            console.log(rooms.value)
-        }
+    await getGroups();
+    console.log(groups.value)
+    savedList.value =  groups.value;
+    const result = Object.values(savedList.value).map(obj => {
+        const { name, state: { all_on } } = obj;
+        return { name, all_on };
+    });
+    localStorage.setItem("draggable-list", JSON.stringify(result));
+    if (savedList.value) {
+        rooms.value = result;
+    }
+    if (localStorage.getItem("draggable-list")) {
+        rooms.value = JSON.parse(localStorage.getItem("draggable-list"));
+        console.log(rooms.value)
     }
 }
 
