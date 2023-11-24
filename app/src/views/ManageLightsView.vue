@@ -26,16 +26,11 @@ onMounted(() => {
 
 const getGroup = async () => {
   try {
-    lights.value = [];
     const response = await axios.get(`http://${gatewayIP}/api/${APIKey}/groups/${groupId}`);
     group.value = response.data;
     console.log('Group data: ', response.data);
-
     const lightsInGroupIds = group.value?.lights || [];
-
-    lightsInGroupIds.forEach((lightId: string) => {
-      getLight(lightId);
-    });
+    await Promise.all(lightsInGroupIds.map((lightId: string) => getLight(lightId)));
   } catch (error) {
     console.error('Error API: ', error);
   }
@@ -58,11 +53,10 @@ const removeLight = async (lightId: number) => {
     const groupAttributes = currentGroup.data;
 
     if (groupAttributes.lights) {
-      groupAttributes.lights = groupAttributes.lights.filter(id => id !== lightId);
-
+      const stringLightId = String(lightId);
+      groupAttributes.lights = groupAttributes.lights.filter(id => id !== stringLightId);
       const response = await axios.put(`http://${gatewayIP}/api/${APIKey}/groups/${groupId}`, groupAttributes);
       console.log('Light removed from group. API Response:', response.data);
-
       await getGroup();
       await getAllLights().then((response) => {
         allLights.value = response;
@@ -74,20 +68,18 @@ const removeLight = async (lightId: number) => {
   } catch (error) {
     console.error('Error API: ', error);
   }
-}
+};
+
 
 const getAllLights = async (): Promise<LightsApiResponse> => {
   try {
     const allLightsResponse = await axios.get(`http://${gatewayIP}/api/${APIKey}/lights`);
-
     const lightsInGroupIds = group.value?.lights || [];
-
-    const lightsNotInGroup = Object.keys(allLightsResponse.data)
-      .filter(lightId => !lightsInGroupIds.includes(lightId))
-      .reduce((result, lightId) => {
-        result[lightId] = allLightsResponse.data[lightId];
-        return result;
-      }, {});
+    const lightsNotInGroup = Object.fromEntries(
+      Object.entries(allLightsResponse.data)
+        .filter(([lightId]) => !lightsInGroupIds.includes(lightId))
+        .map(([lightId, lightData]) => [lightId, { ...lightData, id: lightId }])
+    );
 
     return lightsNotInGroup;
   } catch (error) {
@@ -103,19 +95,18 @@ const addLightToGroup = async (lightId: number) => {
     if (!groupAttributes.lights) {
       groupAttributes.lights = [];
     }
-
-    groupAttributes.lights.push(lightId);
+    groupAttributes.lights.push(String(lightId));
     const response = await axios.put(`http://${gatewayIP}/api/${APIKey}/groups/${groupId}`, groupAttributes);
     console.log('Light added to group: ', response.data);
     await getGroup();
     await getAllLights().then((response) => {
-        allLights.value = response;
+      allLights.value = response;
     });
 
   } catch (error) {
-    console.error('Error API: ', error);
+    console.error('Error adding light to group: ', error.response || error.message || error);
   }
-}
+};
 
 const renameLight = async (lightId: number, newName: string) => {
   console.log('Renaming light: ', lightId, newName);
@@ -165,7 +156,9 @@ const cancelRename = () => {
           <p class="light-manufacturer">Model: {{ light.modelid }}</p>
           <p class="light-manufacturer">Unique ID: {{ light.uniqueid }}</p>
         </div>
+
         {{ lightId }}
+
         <button @click="removeLight(lightId)">Remove</button>
         <button @click="openRenameDialog(lightId)">Rename</button>
       
@@ -190,6 +183,9 @@ const cancelRename = () => {
           <p class="light-manufacturer">Model: {{ light.modelid }}</p>
           <p class="light-manufacturer">Unique ID: {{ light.uniqueid }}</p>
         </div>
+
+        {{ lightId }}
+
         <button @click="addLightToGroup(lightId)">Add to Group</button>
         <button @click="openRenameDialog(lightId)">Rename</button>
       
