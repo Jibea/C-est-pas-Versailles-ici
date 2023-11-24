@@ -146,59 +146,63 @@ const cancelRename = () => {
   <div class="room-view">
     <h1>Manage Lights View</h1>
 
-    <h1>Lights in the Group</h1>
-    <ul class="light-list">
-        <li v-for="lightId in lights" :key="lightId" class="light-item">
-            <div class="light-info">
-                <p class="light-name">{{ detailedLights[lightId]?.name || 'Loading...' }}</p>
-                <p class="light-state">{{ detailedLights[lightId]?.state && detailedLights[lightId]?.state.on ? 'On' : 'Off' }}</p>
-                <p class="light-manufacturer">Manufacturer: {{ detailedLights[lightId]?.manufacturername || 'Loading...' }}</p>
-                <p class="light-manufacturer">Model: {{ detailedLights[lightId]?.modelid || 'Loading...' }}</p>
-                <p class="light-manufacturer">Unique ID: {{ detailedLights[lightId]?.uniqueid || 'Loading...' }}</p>
-            </div>
-
-            {{ lightId }}
-
-            <button @click="removeLight(lightId)">Remove</button>
-            <button @click="openRenameDialog(lightId)">Rename</button>
-
-            <div v-if="renameDialogOpen" class="rename-dialog">
-                <label for="newLightName">Enter new name:</label>
-                <input v-model="newLightName" type="text" id="newLightName" class="rename-input"/>
-                <div class="button-container">
-                    <button @click="renameLight(lightId, newLightName)">Confirm</button>
-                    <button @click="cancelRename">Cancel</button>
+    <div class="lights-in-group">
+        <h1>Lights in the Group</h1>
+        <ul class="light-list">
+            <li v-for="lightId in lights" :key="lightId" class="light-item">
+                <div class="light-info">
+                    <p class="light-name">{{ detailedLights[lightId]?.name || 'Loading...' }}</p>
+                    <p class="light-state">{{ detailedLights[lightId]?.state && detailedLights[lightId]?.state.on ? 'On' : 'Off' }}</p>
+                    <p class="light-manufacturer">Manufacturer: {{ detailedLights[lightId]?.manufacturername || 'Loading...' }}</p>
+                    <p class="light-manufacturer">Model: {{ detailedLights[lightId]?.modelid || 'Loading...' }}</p>
+                    <p class="light-manufacturer">Unique ID: {{ detailedLights[lightId]?.uniqueid || 'Loading...' }}</p>
                 </div>
-            </div>
-        </li>
-    </ul>
 
-    <h2>All Lights</h2>
-    <ul class="light-list">
-        <li v-for="(light, lightId) in allLights" :key="lightId" class="light-item">
-            <div class="light-info">
-                <p class="light-name">{{ light.name }}</p>
-                <p class="light-state">{{ light.state.on ? 'On' : 'Off' }}</p>
-                <p class="light-manufacturer">Manufacturer: {{ light.manufacturername }}</p>
-                <p class="light-manufacturer">Model: {{ light.modelid }}</p>
-                <p class="light-manufacturer">Unique ID: {{ light.uniqueid }}</p>
-            </div>
+                {{ lightId }}
 
-            {{ lightId }}
+                <button @click="removeLight(lightId)">Remove</button>
+                <button @click="openRenameDialog(lightId)">Rename</button>
 
-            <button @click="addLightToGroup(lightId)">Add to Group</button>
-            <button @click="openRenameDialog(lightId)">Rename</button>
-
-            <div v-if="renameDialogOpen" class="rename-dialog">
-                <label for="newLightName">Enter new name:</label>
-                <input v-model="newLightName" type="text" id="newLightName" class="rename-input"/>
-                <div class="button-container">
-                    <button @click="renameLight(lightId, newLightName)">Confirm</button>
-                    <button @click="cancelRename">Cancel</button>
+                <div v-if="renameDialogOpen" class="rename-dialog">
+                    <label for="newLightName">Enter new name:</label>
+                    <input v-model="newLightName" type="text" id="newLightName" class="rename-input"/>
+                    <div class="button-container">
+                        <button @click="renameLight(lightId, newLightName)">Confirm</button>
+                        <button @click="cancelRename">Cancel</button>
+                    </div>
                 </div>
-            </div>
-        </li>
-    </ul>
+            </li>
+        </ul>
+    </div>
+
+    <div class="all-lights">
+        <h2>All Lights</h2>
+        <ul class="light-list">
+            <li v-for="(light, lightId) in allLights" :key="lightId" class="light-item">
+                <div class="light-info">
+                    <p class="light-name">{{ light.name }}</p>
+                    <p class="light-state">{{ light.state.on ? 'On' : 'Off' }}</p>
+                    <p class="light-manufacturer">Manufacturer: {{ light.manufacturername }}</p>
+                    <p class="light-manufacturer">Model: {{ light.modelid }}</p>
+                    <p class="light-manufacturer">Unique ID: {{ light.uniqueid }}</p>
+                </div>
+
+                {{ lightId }}
+
+                <button @click="addLightToGroup(lightId)">Add to Group</button>
+                <button @click="openRenameDialog(lightId)">Rename</button>
+
+                <div v-if="renameDialogOpen" class="rename-dialog">
+                    <label for="newLightName">Enter new name:</label>
+                    <input v-model="newLightName" type="text" id="newLightName" class="rename-input"/>
+                    <div class="button-container">
+                        <button @click="renameLight(lightId, newLightName)">Confirm</button>
+                        <button @click="cancelRename">Cancel</button>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
   </div>
 </template>
 
@@ -305,6 +309,21 @@ button:active {
 
 .button-container button:last-child {
   margin-right: 10px;
+}
+
+.lights-in-group {
+    background-color: #f1eeee;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    padding: 10px;
+}
+
+.all-lights {
+    background-color:  #f1eeee;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
 }
 
 </style>
