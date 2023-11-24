@@ -68,7 +68,7 @@ const cancelRename = () => {
 const renameGroup = async () => {
   try {
     const response = await axios.put(
-      `http://${gatewayIP}/api/${APIKey}/groups/${groupId}`,
+      `http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/groups/${groupId}`,
       { name: newGroupName.value }
     );
     group.value = response.data;

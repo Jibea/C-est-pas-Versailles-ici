@@ -6,8 +6,6 @@ import { GroupAttributes } from '@/types/GroupAttributes';
 import { LightsApiResponse } from '@/types/Light';
 import { Light } from '@/types/Light';
 
-const gatewayIP = '127.17.0.2'
-const APIKey = "key";
 const router = useRouter();
 const group = ref<GroupAttributes>();
 const lights = ref<string[]>([]);
@@ -27,7 +25,7 @@ onMounted(() => {
 
 const getGroup = async () => {
     try {
-        const response = await axios.get(`http://${gatewayIP}/api/${APIKey}/groups/${groupId}`);
+        const response = await axios.get(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/groups/${groupId}`);
         group.value = response.data;
         console.log('Group data: ', response.data);
         const lightsInGroupIds = group.value?.lights || [];
@@ -40,7 +38,7 @@ const getGroup = async () => {
 
 const getLight = async (lightId: string) => {
     try {
-        const response = await axios.get(`http://${gatewayIP}/api/${APIKey}/lights/${lightId}`);
+        const response = await axios.get(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/lights/${lightId}`);
         const lightData = response.data;
         detailedLights.value = {
             ...detailedLights.value,
@@ -54,12 +52,12 @@ const getLight = async (lightId: string) => {
 
 const removeLight = async (lightId: string) => {
     try {
-        const currentGroup = await axios.get(`http://${gatewayIP}/api/${APIKey}/groups/${groupId}`);
+        const currentGroup = await axios.get(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/groups/${groupId}`);
         const groupAttributes = currentGroup.data;
 
         if (groupAttributes.lights) {
             groupAttributes.lights = groupAttributes.lights.filter((id: string) => id !== lightId);
-            const response = await axios.put(`http://${gatewayIP}/api/${APIKey}/groups/${groupId}`, groupAttributes);
+            const response = await axios.put(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/groups/${groupId}`, groupAttributes);
             console.log('Light removed from group. API Response:', response.data);
             await getGroup();
             await getAllLights().then((response) => {
@@ -75,7 +73,7 @@ const removeLight = async (lightId: string) => {
 
 const getAllLights = async (): Promise<LightsApiResponse> => {
     try {
-        const allLightsResponse = await axios.get(`http://${gatewayIP}/api/${APIKey}/lights`);
+        const allLightsResponse = await axios.get(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/lights`);
         const lightsInGroupIds = group.value?.lights || [];
         const lightsNotInGroup = Object.fromEntries(
             Object.entries(allLightsResponse.data)
@@ -91,14 +89,14 @@ const getAllLights = async (): Promise<LightsApiResponse> => {
 
 const addLightToGroup = async (lightId: string) => {
     try {
-        const currentGroup = await axios.get(`http://${gatewayIP}/api/${APIKey}/groups/${groupId}`);
+        const currentGroup = await axios.get(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/groups/${groupId}`);
         const groupAttributes = currentGroup.data;
 
         if (!groupAttributes.lights) {
             groupAttributes.lights = [];
         }
         groupAttributes.lights.push(lightId);
-        const response = await axios.put(`http://${gatewayIP}/api/${APIKey}/groups/${groupId}`, groupAttributes);
+        const response = await axios.put(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/groups/${groupId}`, groupAttributes);
         console.log('Light added to group: ', response.data);
         await getGroup();
         await getAllLights().then((response) => {
@@ -113,7 +111,7 @@ const renameLight = async (lightId: string, newName: string) => {
     console.log('Renaming light: ', lightId, newName);
     try {
         const response = await axios.put(
-            `http://${gatewayIP}/api/${APIKey}/lights/${lightId}`,
+            `http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/lights/${lightId}`,
             { name: newName }
         );
         console.log('Light renamed: ', response.data);
