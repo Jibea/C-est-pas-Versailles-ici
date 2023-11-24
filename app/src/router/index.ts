@@ -17,6 +17,9 @@ const routes: Array<RouteRecordRaw> = [
   { path: '/room/:roomName/:groupId/manageLights', name: 'manageLightsRoute', component: ManageLightsView},
   { path: '/room/:roomName/:groupId/schedule', name: 'scheduleRoute', component: ScheduleView},
   { path: '/room/:roomName/:groupId/sensorsControl', name: 'sensorsControlRoute', component: SensorsControlView},
+
+  // Redirect if no route is matched let it the last
+  { path: '/:catchAll(.*)', redirect: '/' },
 ]
 
 const router = createRouter({
