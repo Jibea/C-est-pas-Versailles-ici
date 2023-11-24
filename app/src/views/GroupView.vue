@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router';
 import { GroupAttributes } from '@/types/GroupAttributes';
 import axios from 'axios';
 import Light from '@/types/Light';
+import TopBar from '@/components/TopBar.vue';
 
 const router = useRouter();
 const groupId = decodeURIComponent(router.currentRoute.value.params.groupId);
@@ -43,8 +44,8 @@ const getLight = async (lightId: string) => {
 </script>
 
 <template>
-
   <div class="group-view">
+    <TopBar :title="group?.name ? group.name : 'Group'" />
     <h1>{{ group?.name }}</h1>
     <p class="group-id">Group ID: {{ group?.id }}</p>
     <ul class="light-list">
