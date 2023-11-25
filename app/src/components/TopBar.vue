@@ -1,7 +1,7 @@
 <script lang="ts" setup name="TopBar">
     import { defineProps } from 'vue';
-    import BurgerComponent from '@/components/BurgerComponent.vue';
     import { useRouter } from 'vue-router';
+    import HomeIcon from "@/components/HomeComponent.vue"
 
 const props = defineProps({
     title: { type: String, required: true },
@@ -17,7 +17,7 @@ const goBack = () => {
 
 <template>
     <div class="top-bar">
-      <BurgerComponent />
+      <HomeIcon class="home-style"/>
       <font-awesome-icon
         :icon="['fas', 'arrow-left']"
         class="arrow-icon"
@@ -27,25 +27,31 @@ const goBack = () => {
     </div>
   </template>
   
-  <style scoped>
-  .top-bar {
+<style scoped>
+
+.top-bar {
     background-color: gray;
     display: flex;
     align-items: center;
-    padding: 40px;
+    padding: 30px;
   }
-  
-  .title {
-    color: white;
-    font-size: 24px;
-    margin: 0 auto;
-  }
-  
-  .arrow-icon {
-    color: white;
-    cursor: pointer;
-    font-size: 24px;
-    position: relative;
-    left: 70px;
-  }
-  </style>
+
+.home-style {
+  float: left;
+  cursor: pointer;
+}
+
+.title {
+  color: white;
+  font-size: 24px;
+  margin: 0 auto;
+}
+
+.arrow-icon {
+  color: white;
+  cursor: pointer;
+  font-size: 24px;
+  position: relative;
+  left: 70px;
+}
+</style>
