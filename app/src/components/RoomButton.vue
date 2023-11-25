@@ -6,6 +6,7 @@ import { defineEmits } from 'vue';
     const props = defineProps({
       roomName: { type: String, required: true },
       lampsLit: Boolean,
+      admin: Boolean,
     });
 
     const buttonClass = computed(() => {
@@ -27,7 +28,7 @@ import { defineEmits } from 'vue';
         {{ roomName }}
     </button>
   </router-link>
-  <button @click="removeGroup()" class="remove-button">-</button>
+  <button v-if="admin" @click="removeGroup()" class="remove-button">-</button>
 </template>
 
 <style scoped>
