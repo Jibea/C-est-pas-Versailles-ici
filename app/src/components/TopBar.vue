@@ -1,6 +1,6 @@
 <script lang="ts" setup name="TopBar">
     import { defineProps } from 'vue';
-    import BurgerComponent from '@/components/BurgerComponent.vue';
+    import HomeIcon from "@/components/HomeComponent.vue"
 
 const props = defineProps({
     title: { type: String, required: true },
@@ -9,12 +9,18 @@ const props = defineProps({
 
 <template>
     <div>
-        <BurgerComponent />
+        <HomeIcon class="home-style"/>
         <h3>{{ props.title }}</h3>
     </div>
 </template>
 
 <style scoped>
+.home-style {
+    margin-left: 40px;
+    margin-top: 20px;
+    float: left;
+    position: absolute;
+}
 div {
     background-color: gray;
     flex-direction: column;
