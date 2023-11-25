@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router';
 import axios from 'axios';
 import { GroupsResponse } from '@/types/GroupsResponse';
 import { Group } from '@/types/Group';
+import TopBar from '@/components/TopBar.vue';
 
 const roomName = ref('');
 const groups = ref<GroupsResponse>({});
@@ -61,6 +62,9 @@ const filteredGroups = computed(() => {
 </script>
 
 <template>
+  <div>
+    <TopBar :title="roomName" />
+  </div>
   <div class="room-view">
     <h1>Room View</h1>
     <p class="room-name">Room name: {{ roomName }}</p>
