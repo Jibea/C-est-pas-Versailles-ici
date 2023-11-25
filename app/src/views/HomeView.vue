@@ -1,21 +1,65 @@
 
 <script lang="ts" setup name="HomeView">
     import { ref, onMounted } from "vue";
+    import { useRoute } from "vue-router";
     import TopBar from '@/components/TopBar.vue';
     import RoomButton from '@/components/RoomButton.vue';
     import draggable from 'vuedraggable'
+    import axios from "axios";
+    import { Group } from "@/types/Group";
 
-const rooms = ref();
+const rooms = ref([]);
+const route = useRoute();
 let isEdit = ref(false);
 const message = ref("");
+const gatewayIP = process.env.VUE_APP_GATEWAY_IP
+const hiddenPath = process.env.VUE_APP_HIDDEN_PATH
+const APIKey = process.env.VUE_APP_API_KEY;
+const groups = ref();
+const groupsMap = ref();
+
+const getGroups = async () => {
+    try {
+        const response = await axios.get(`http://${gatewayIP}/api/${APIKey}/groups`);
+        groupsMap.value = Object.entries(response.data).map(([groupId, group]: [string, Group]) => {
+            const name = group.name;
+            return { name, groupId };
+        });
+        groupsMap.value = groupsMap.value.filter(group => !group.name.includes('-'));
+        console.log('Groups map: ', groupsMap.value);
+        groups.value = response.data;
+        console.log('Groups data: ', groups.value);
+    } catch (error) {
+        console.error('Error API: ', error);
+    }
+}
+
+
+const setupAdmin = async (savedList:any) => {
+    await getGroups();
+    console.log(groups.value)
+    savedList.value =  groups.value;
+    const result = ref(Object.values(savedList.value).map(obj => {
+        const { name, state: { all_on } } = obj;
+        return { name, all_on };
+    }));
+    result.value = result.value.filter(room => !room.name.includes('-'));
+    localStorage.setItem("draggable-list", JSON.stringify(result.value));
+    if (savedList.value) {
+        rooms.value = result.value;
+    }
+    if (localStorage.getItem("draggable-list")) {
+        rooms.value = JSON.parse(localStorage.getItem("draggable-list"));
+        console.log(rooms.value)
+    }
+}
 
 onMounted(() => {
     // TODO get tous les groupes des rooms dans l'api
-    const savedList = localStorage.getItem("draggable-list");
-    if (savedList) {
-        rooms.value = JSON.parse(savedList);
-    }
+    const savedList = ref()
+    setupAdmin(savedList)
 });
+
 
 const onSave = () => {
     // TODO save in api new group of room
@@ -28,10 +72,23 @@ const addRoom = () => {
     rooms.value.push(newItem);
 }
 
+const addRoomAdmin = () => {
+    axios.post(`http://${gatewayIP}/api/${APIKey}/groups`, {
+        name: message.value,
+    }).then((response) => {
+            console.log(response);
+            window.location.reload();
+        }, (error) => {
+            console.log(error);
+        });
+}
+
 const changeMod = () => {
     if (isEdit.value) {
         isEdit.value = false
-        onSave()
+        if (route.path !== `/${process.env.VUE_APP_HIDDEN_PATH}`) {
+            onSave()
+        }
     } else {
         isEdit.value = true
         message.value = ""
@@ -44,13 +101,17 @@ const onDragStart = (event) => {
     }
 }
 
-const onClickRemove = (value) => {
-    const roomIndex = rooms.value.findIndex(room => room.name === value);
-
-    if (roomIndex !== -1) {
-        rooms.value.splice(roomIndex, 1);
-        localStorage.setItem("draggable-list", JSON.stringify(rooms.value));
-    }
+const onClickRemoveAdmin = (value) => {
+    console.log(value)
+    const index = groupsMap.value.findIndex(room => room.name === value)
+    const groupId = groupsMap.value[index].groupId
+    axios.delete(`http://${gatewayIP}/api/${APIKey}/groups/${groupId}`)
+        .then((response) => {
+            console.log(response);
+            window.location.reload();
+        }, (error) => {
+            console.log(error);
+        });
 }
 
 </script>
@@ -59,12 +120,14 @@ const onClickRemove = (value) => {
     <TopBar title="Home"/>
     <draggable v-model="rooms" :animation="300" @dragstart="onDragStart">
         <template #item="{ element: room }">
-            <RoomButton @remove="onClickRemove"  :roomName="room.name" :lampsLit="room.lights" ></RoomButton>
+            <RoomButton v-if="$route.path === '/' + hiddenPath" @remove="onClickRemoveAdmin"  :roomName="room.name" :lampsLit="room.lights" :admin="true"></RoomButton>
+            <RoomButton v-else  :roomName="room.name" :lampsLit="room.lights" :admin="false"></RoomButton>
         </template>
     </draggable>
-    <button @click="changeMod">Edit mode</button>
+    <button v-if="$route.path === '/' + hiddenPath " @click="changeMod">Edit mode</button>
     <div v-if="isEdit">
         <input v-model="message" placeholder="Name of new room"/>
-        <button @click="addRoom">Add a room</button>
+        <button v-if="$route.path === '/' + hiddenPath" @click="addRoomAdmin">Add a room</button>
+        <button v-else @click="addRoom">Add a room</button>
     </div>
 </template>
