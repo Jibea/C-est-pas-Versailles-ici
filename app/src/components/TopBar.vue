@@ -1,38 +1,57 @@
 <script lang="ts" setup name="TopBar">
     import { defineProps } from 'vue';
+    import { useRouter } from 'vue-router';
     import HomeIcon from "@/components/HomeComponent.vue"
 
 const props = defineProps({
     title: { type: String, required: true },
 })
+
+const router = useRouter();
+
+const goBack = () => {
+    router.go(-1);
+}
+
 </script>
 
 <template>
-    <div>
-        <HomeIcon class="home-style"/>
-        <h3>{{ props.title }}</h3>
+    <div class="top-bar">
+      <HomeIcon class="home-style"/>
+      <font-awesome-icon
+        :icon="['fas', 'arrow-left']"
+        class="arrow-icon"
+        @click="goBack"
+      />
+      <h3 class="title">{{ props.title }}</h3>
     </div>
-</template>
-
+  </template>
+  
 <style scoped>
-.home-style {
-    margin-left: 40px;
-    margin-top: 20px;
-    float: left;
-    position: absolute;
-}
-div {
+
+.top-bar {
     background-color: gray;
-    flex-direction: column;
+    display: flex;
     align-items: center;
-    justify-content: center;
-    text-align: center;
+    padding: 30px;
+  }
+
+.home-style {
+  float: left;
+  cursor: pointer;
 }
-h3 {
-    color: white;
-    justify-content: center;
-    text-align: center;
-    padding-top: 2%;
-    padding-bottom: 2%;
+
+.title {
+  color: white;
+  font-size: 24px;
+  margin: 0 auto;
+}
+
+.arrow-icon {
+  color: white;
+  cursor: pointer;
+  font-size: 24px;
+  position: relative;
+  left: 70px;
 }
 </style>

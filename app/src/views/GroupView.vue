@@ -162,12 +162,6 @@ const renameGroup = async () => {
 
 <style scoped>
 
-.group-view {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
 h1 {
   font-size: 24px;
   margin-bottom: 10px;
@@ -184,6 +178,9 @@ h1 {
 }
 
 .light-item {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
   margin-bottom: 20px;
   border: 1px solid #ddd;
   padding: 10px;
@@ -251,14 +248,18 @@ ul.light-list {
   display: flex;
   justify-content: space-between;
 }
+
 .edit-group-section {
   display: flex;
-  flex-direction: row;
+  flex-wrap: wrap;
   justify-content: space-around;
+  max-width: 400px;
+  margin: 0 auto;
   margin-top: 20px;
 }
 
 .edit-group-section button {
+  margin: 5px;
   padding: 15px 20px;
   font-size: 18px;
   cursor: pointer;
