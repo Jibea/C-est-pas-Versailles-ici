@@ -13,6 +13,8 @@ const lights = ref<Light[]>([]);
 const selectedTab = ref('lights');
 const renameDialogOpen = ref(false);
 const newGroupName = ref('');
+const isSearching = ref(false);
+const timer = ref(0);
 
 onMounted(() => {
     getGroup();
@@ -96,6 +98,29 @@ const toggleLight = async (light: Light) => {
   }
 };
 
+
+const searchLights = async () => {
+    try {
+        isSearching.value = true;
+        setTimer(60);
+        await axios.put(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/config`, {permitjoin: 60});
+      } catch (error) {
+        console.error('Error API: ', error);
+    }
+};
+
+const setTimer = (time: number) => {
+    timer.value = time;
+    const interval = setInterval(() => {
+        console.log(timer);
+        timer.value--;
+        if (timer.value === 0) {
+            isSearching.value = false;
+            clearInterval(interval);
+        }
+    }, 1000);
+}
+
 </script>
 
 <template>
@@ -175,14 +200,22 @@ const toggleLight = async (light: Light) => {
       <router-link :to="{ name: 'sensorsControlRoute', params: { groupId: group?.id } }">
         <button>Sensor Control</button>
       </router-link>
-        
+
+      <button @click="searchLights">Search New Lights</button>
+
+    </div>
+    <div>
+      <div v-if="isSearching" class="modalSearching">
+        <div class="modalSearching-content">
+            <p>Searching for new lights. Time remaining: {{ timer}} seconds</p>
+        </div>
+      </div>
     </div>
 
   </div>
-    
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 
 h1 {
   font-size: 24px;
@@ -285,6 +318,7 @@ ul.light-list {
   padding: 15px 20px;
   font-size: 18px;
   cursor: pointer;
+  width: 180px;
   background-color: #007BFF;
   color: white;
   border: none;
@@ -370,6 +404,24 @@ input:checked + .slider:before {
   -webkit-transform: translateX(26px);
   -ms-transform: translateX(26px);
   transform: translateX(26px);
+}
+
+.modalSearching {
+  display: block;
+  position: fixed;
+  z-index: 1;
+  padding-top: 100px;
+  background-color: rgba(0,0,0,0.8);
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  p {
+    font-size: 20px;
+    font-weight: bold;
+    color: #fff;
+  }
 }
 
 </style>
