@@ -82,11 +82,11 @@ const fixMessageSyntax = () => {
         if (separate[i].length > 0)
             message.value += separate[i] + " "
     }
+    if (separate[separate.length - 1].length > 0)
     message.value += separate[separate.length - 1]
 }
 
 const addRoomAdmin = () => {
-    fixMessageSyntax()
     axios.post(`http://${gatewayIP}/api/${APIKey}/groups`, {
         name: message.value,
     }).then((response) => {
@@ -140,7 +140,7 @@ const onClickRemoveAdmin = (value) => {
     </draggable>
     <button v-if="$route.path === '/' + hiddenPath " @click="changeMod">Edit mode</button>
     <div v-if="isEdit">
-        <input v-model="message" placeholder="Name of new room" maxlength="16"/>
+        <input v-model="message" placeholder="Name of new room" maxlength="16" v-on:input="fixMessageSyntax"/>
         <button v-if="$route.path === '/' + hiddenPath" @click="addRoomAdmin">Add a room</button>
         <button v-else @click="addRoom">Add a room</button>
     </div>

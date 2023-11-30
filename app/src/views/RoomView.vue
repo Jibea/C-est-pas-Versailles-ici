@@ -17,6 +17,18 @@ onMounted(() => {
     getGroups();
 });
 
+const fixMessageSyntax = () => {
+    groupName.value = groupName.value.replaceAll("-", " ")
+    const separate = groupName.value.split(" ")
+    groupName.value = ""
+    for (let i = 0; i < separate.length - 1; i++) {
+        if (separate[i].length > 0)
+            groupName.value += separate[i] + " "
+    }
+    if (separate[separate.length - 1].length > 0)
+    groupName.value += separate[separate.length - 1]
+}
+
 const getGroups = async () => {
     try {
         const response = await axios.get(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/groups`);
@@ -87,7 +99,7 @@ const filteredGroups = computed(() => {
     </section>
     
     <section class="add-group-section">
-      <input v-model="groupName" type="text" placeholder="Enter group name" class="group-input" maxlength="16"/>
+      <input v-model="groupName" type="text" placeholder="Enter group name" class="group-input" maxlength="16" v-on:input="fixMessageSyntax"/>
       <button @click="addGroup" class="add-button">Add</button>
     </section>
 
