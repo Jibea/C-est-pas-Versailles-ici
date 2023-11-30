@@ -13,6 +13,8 @@ const lights = ref<Light[]>([]);
 const selectedTab = ref('lights');
 const renameDialogOpen = ref(false);
 const newGroupName = ref('');
+const isSearching = ref(false);
+const timer = ref(0);
 
 onMounted(() => {
     getGroup();
@@ -84,11 +86,25 @@ const renameGroup = async () => {
 
 const searchLights = async () => {
     try {
+        isSearching.value = true;
+        setTimer(60);
         await axios.put(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/config`, {permitjoin: 60});
-    } catch (error) {
+      } catch (error) {
         console.error('Error API: ', error);
     }
 };
+
+const setTimer = (time: number) => {
+    timer.value = time;
+    const interval = setInterval(() => {
+        console.log(timer);
+        timer.value--;
+        if (timer.value === 0) {
+            isSearching.value = false;
+            clearInterval(interval);
+        }
+    }, 1000);
+}
 
 </script>
 
@@ -166,12 +182,18 @@ const searchLights = async () => {
       <button @click="searchLights">Search New Lights</button>
 
     </div>
+    <div>
+      <div v-if="isSearching" class="modalSearching">
+        <div class="modalSearching-content">
+            <p>Searching for new lights. Time remaining: {{ timer}} seconds</p>
+        </div>
+      </div>
+    </div>
 
   </div>
-    
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 
 h1 {
   font-size: 24px;
@@ -299,6 +321,24 @@ ul.light-list {
   border: 1px solid #ccc;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   z-index: 1000;
+}
+
+.modalSearching {
+  display: block;
+  position: fixed;
+  z-index: 1;
+  padding-top: 100px;
+  background-color: rgba(0,0,0,0.8);
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  p {
+    font-size: 20px;
+    font-weight: bold;
+    color: #fff;
+  }
 }
 
 </style>
