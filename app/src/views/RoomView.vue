@@ -121,12 +121,14 @@ const toggleGroup = async (groupId: string) => {
             <span class="group-name">{{ group.name }}</span>
           </router-link>
     
+        <div class="group-controls">
           <button @click="removeGroup(groupId)" class="remove-button">Remove</button>
 
           <label class="switch">
             <input type="checkbox" @change="toggleGroup(groupId)" :disabled="groupIdToggle === groupId">
             <span class="slider"></span>
           </label>
+        </div>
 
         </li>
       </ul>
@@ -263,6 +265,11 @@ input:checked + .slider:before {
 
 .slider.round:before {
   border-radius: 50%;
+}
+
+.group-controls {
+  display: flex;
+  gap: 10px;
 }
 
 </style>
