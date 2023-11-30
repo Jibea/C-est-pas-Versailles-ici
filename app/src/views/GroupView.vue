@@ -112,7 +112,6 @@ const toggleLight = async (light: Light) => {
   }
 };
 
-
 const searchLights = async () => {
     try {
         isSearching.value = true;
@@ -134,6 +133,35 @@ const setTimer = (time: number) => {
         }
     }, 1000);
 }
+
+const updateLightState = async (lightId: string) => {
+  const light = lights.value.find((l) => l.id === lightId);
+
+  if (!light) {
+    console.error('Light not found:', lightId);
+    return;
+  }
+
+  const validBrightness = Math.min(255, Math.max(0, light.state.brightness));
+  const validTemperature = Math.min(light.ctmax, Math.max(light.ctmin, light.state.temperature));
+
+  const payload = {
+    on: light.state.on,
+    bri: validBrightness,
+    ct: validTemperature,
+  };
+
+  try {
+    const response = await axios.put(
+      `http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/lights/${lightId}/state`,
+      payload
+    );
+
+    console.log('Light state updated successfully:', response.data);
+  } catch (error) {
+    console.error('Error updating light state:', error);
+  }
+};
 
 </script>
 
@@ -173,11 +201,26 @@ const setTimer = (time: number) => {
             <p class="light-manufacturer">Unique ID: {{ light.uniqueid }}</p>
           </div>
 
-          <!-- toggle switch pour eteindre/allumer les lampes -->
-          <label class="switch">
-            <input type="checkbox" v-model="light.state.on" @change="toggleLight(light)">
-            <span class="slider"></span>
-          </label>
+          <div class="light-controls">
+            
+            <!-- toggle switch pour eteindre/allumer les lampes -->
+            <label class="switch">
+              <input type="checkbox" v-model="light.state.on" @change="toggleLight(light)">
+              <span class="slider"></span>
+            </label>
+
+            <!-- Brightness Slider -->
+            <div class="slider-container">
+              <label>Brightness: {{ light.state.brightness }}</label>
+              <input type="range" min="0" max="255" v-model="light.state.brightness" @input="updateLightState(light.id)" />
+            </div>
+
+            <!-- Temperature Slider -->
+            <div class="slider-container">
+              <label>Temperature: {{ light.state.temperature }}</label>
+              <input type="range" min="153" max="370" v-model="light.state.temperature" @input="updateLightState(light.id)" />
+            </div>
+          </div>
 
         </li>
       </ul>
@@ -360,6 +403,7 @@ ul.light-list {
 }
 
 .switch {
+  margin-top: 10px;
   position: relative;
   display: inline-block;
   width: 60px;
@@ -436,6 +480,18 @@ input:checked + .slider:before {
     font-weight: bold;
     color: #fff;
   }
+}
+
+.light-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+}
+
+.slider-container {
+  margin-top: 10px;
 }
 
 </style>
