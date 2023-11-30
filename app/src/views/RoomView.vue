@@ -87,7 +87,7 @@ const filteredGroups = computed(() => {
     </section>
     
     <section class="add-group-section">
-      <input v-model="groupName" type="text" placeholder="Enter group name" class="group-input" maxlength="26"/>
+      <input v-model="groupName" type="text" placeholder="Enter group name" class="group-input" maxlength="16"/>
       <button @click="addGroup" class="add-button">Add</button>
     </section>
 

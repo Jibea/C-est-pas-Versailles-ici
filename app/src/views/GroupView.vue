@@ -102,7 +102,7 @@ const renameGroup = async () => {
 
     <!-- dialogue pour rename le groupe -->
     <div v-if="renameDialogOpen" class="rename-dialog">
-      <input v-model="newGroupName" type="text" placeholder="Enter new group name" maxlength="26"/>
+      <input v-model="newGroupName" type="text" placeholder="Enter new group name" maxlength="16"/>
       <button @click="cancelRename">Cancel</button>
       <button @click="renameGroup">Rename</button>
     </div>
