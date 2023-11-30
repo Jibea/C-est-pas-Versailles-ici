@@ -20,6 +20,8 @@ interface Light {
   swversion: string;
   type: string;
   uniqueid: string;
+  ctmax: number;
+  ctmin: number;
   id ?: string; // moi qui l'ajoute pour le front
 }
 
