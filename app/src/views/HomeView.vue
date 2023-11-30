@@ -135,7 +135,7 @@ const onClickRemoveAdmin = (value) => {
     </draggable>
     <button v-if="$route.path === '/' + hiddenPath " @click="changeMod">Edit mode</button>
     <div v-if="isEdit">
-        <input v-model="message" placeholder="Name of new room"/>
+        <input v-model="message" placeholder="Name of new room" maxlength="26"/>
         <button v-if="$route.path === '/' + hiddenPath" @click="addRoomAdmin">Add a room</button>
         <button v-else @click="addRoom">Add a room</button>
     </div>
