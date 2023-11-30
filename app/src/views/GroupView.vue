@@ -84,7 +84,7 @@ const renameGroup = async () => {
 
 const searchLights = async () => {
     try {
-        const response = await axios.put(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/config`, {permitjoin: 60});
+        await axios.put(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/config`, {permitjoin: 60});
     } catch (error) {
         console.error('Error API: ', error);
     }
