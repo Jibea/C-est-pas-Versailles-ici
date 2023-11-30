@@ -51,6 +51,7 @@ const removeGroup = async (groupId: string) => {
 
 const addGroup = async () => {
   try {
+    groupName.value = roomName.value + "-" + groupName.value
     const response = await axios.post(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/groups`, {
       name: groupName.value,
     });
@@ -87,7 +88,7 @@ const filteredGroups = computed(() => {
       <ul class="group-list">
         <li v-for="([groupId, group]) in filteredGroups" :key="groupId" class="group-item">
 
-          <router-link :to="{ name: 'groupRoute', params: { groupId: groupId } }">
+          <router-link :to="{ name: 'groupRoute', params: { groupId: groupId, roomName: roomName } }">
             <span class="group-name">{{ group.name }}</span>
           </router-link>
     

@@ -8,6 +8,7 @@ import TopBar from '@/components/TopBar.vue';
 
 const router = useRouter();
 const groupId = decodeURIComponent(router.currentRoute.value.params.groupId);
+const roomName = decodeURIComponent(router.currentRoute.value.params.roomName);
 const group = ref<GroupAttributes>();
 const lights = ref<Light[]>([]);
 const selectedTab = ref('lights');
@@ -80,6 +81,7 @@ const cancelRename = () => {
 
 const renameGroup = async () => {
   try {
+    newGroupName.value = roomName.value + "-" + newGroupName.value
     const response = await axios.put(
       `http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/groups/${groupId}`,
       { name: newGroupName.value }
