@@ -38,6 +38,7 @@ const getLight = async (lightId: string) => {
     try {
         const response = await axios.get(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/lights/${lightId}`);
         const lightData = response.data;
+        lightData.id = lightId;
         lights.value.push(lightData);
         console.log('Light data: ', lightData);
     } catch (error) {
@@ -81,6 +82,20 @@ const renameGroup = async () => {
   }
 }
 
+const toggleLight = async (light: Light) => {
+  try {
+    const payload = { on: light.state.on };
+
+    const response = await axios.put(
+      `http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/lights/${light.id}/state`,
+      payload
+    );
+    console.log('Light state updated:', response.data);
+  } catch (error) {
+    console.error('Error updating light state: ', error);
+  }
+};
+
 </script>
 
 <template>
@@ -118,6 +133,13 @@ const renameGroup = async () => {
             <p class="light-manufacturer">Model: {{ light.modelid }}</p>
             <p class="light-manufacturer">Unique ID: {{ light.uniqueid }}</p>
           </div>
+
+          <!-- toggle switch pour eteindre/allumer les lampes -->
+          <label class="switch">
+            <input type="checkbox" v-model="light.state.on" @change="toggleLight(light)">
+            <span class="slider"></span>
+          </label>
+
         </li>
       </ul>
     </div>
@@ -287,6 +309,67 @@ ul.light-list {
   border: 1px solid #ccc;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   z-index: 1000;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
 }
 
 </style>
