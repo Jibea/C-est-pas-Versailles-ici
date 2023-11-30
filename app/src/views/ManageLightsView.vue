@@ -29,7 +29,7 @@ const getGroup = async () => {
         group.value = response.data;
         console.log('Group data: ', response.data);
         const lightsInGroupIds = group.value?.lights || [];
-        await Promise.all(lightsInGroupIds.map((lightId: string) => getLight(lightId)));        
+        await Promise.all(lightsInGroupIds.map((lightId: string) => getLight(lightId)));
         lights.value = lightsInGroupIds;
     } catch (error) {
         console.error('Error API: ', error);

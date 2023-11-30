@@ -81,6 +81,15 @@ const renameGroup = async () => {
   }
 }
 
+
+const searchLights = async () => {
+    try {
+        const response = await axios.put(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/config`, {permitjoin: 60});
+    } catch (error) {
+        console.error('Error API: ', error);
+    }
+};
+
 </script>
 
 <template>
@@ -153,7 +162,9 @@ const renameGroup = async () => {
       <router-link :to="{ name: 'sensorsControlRoute', params: { groupId: group?.id } }">
         <button>Sensor Control</button>
       </router-link>
-        
+
+      <button @click="searchLights">Search New Lights</button>
+
     </div>
 
   </div>
@@ -263,6 +274,7 @@ ul.light-list {
   padding: 15px 20px;
   font-size: 18px;
   cursor: pointer;
+  width: 180px;
   background-color: #007BFF;
   color: white;
   border: none;
