@@ -163,7 +163,7 @@ const cancelRename = () => {
 
                 <div v-if="renameDialogOpen" class="rename-dialog">
                     <label for="newLightName">Enter new name:</label>
-                    <input v-model="newLightName" type="text" id="newLightName" class="rename-input"/>
+                    <input v-model="newLightName" type="text" id="newLightName" class="rename-input" maxlength="26"/>
                     <div class="button-container">
                         <button @click="renameLight(lightId, newLightName)">Confirm</button>
                         <button @click="cancelRename">Cancel</button>
@@ -192,7 +192,7 @@ const cancelRename = () => {
 
                 <div v-if="renameDialogOpen" class="rename-dialog">
                     <label for="newLightName">Enter new name:</label>
-                    <input v-model="newLightName" type="text" id="newLightName" class="rename-input"/>
+                    <input v-model="newLightName" type="text" id="newLightName" class="rename-input" maxlength="26"/>
                     <div class="button-container">
                         <button @click="renameLight(lightId, newLightName)">Confirm</button>
                         <button @click="cancelRename">Cancel</button>

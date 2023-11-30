@@ -17,6 +17,18 @@ onMounted(() => {
     getGroups();
 });
 
+const fixMessageSyntax = () => {
+    groupName.value = groupName.value.replaceAll("-", " ")
+    const separate = groupName.value.split(" ")
+    groupName.value = ""
+    for (let i = 0; i < separate.length - 1; i++) {
+        if (separate[i].length > 0)
+            groupName.value += separate[i] + " "
+    }
+    if (separate[separate.length - 1].length > 0)
+    groupName.value += separate[separate.length - 1]
+}
+
 const getGroups = async () => {
     try {
         const response = await axios.get(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/groups`);
@@ -39,6 +51,7 @@ const removeGroup = async (groupId: string) => {
 
 const addGroup = async () => {
   try {
+    groupName.value = roomName.value + "-" + groupName.value
     const response = await axios.post(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/groups`, {
       name: groupName.value,
     });
@@ -75,7 +88,7 @@ const filteredGroups = computed(() => {
       <ul class="group-list">
         <li v-for="([groupId, group]) in filteredGroups" :key="groupId" class="group-item">
 
-          <router-link :to="{ name: 'groupRoute', params: { groupId: groupId } }">
+          <router-link :to="{ name: 'groupRoute', params: { groupId: groupId, roomName: roomName } }">
             <span class="group-name">{{ group.name }}</span>
           </router-link>
     
@@ -87,7 +100,7 @@ const filteredGroups = computed(() => {
     </section>
     
     <section class="add-group-section">
-      <input v-model="groupName" type="text" placeholder="Enter group name" class="group-input" />
+      <input v-model="groupName" type="text" placeholder="Enter group name" class="group-input" maxlength="16" v-on:input="fixMessageSyntax"/>
       <button @click="addGroup" class="add-button">Add</button>
     </section>
 

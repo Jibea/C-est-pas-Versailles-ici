@@ -11,7 +11,7 @@
 const rooms = ref([]);
 const route = useRoute();
 let isEdit = ref(false);
-const message = ref("");
+let message = ref("");
 const gatewayIP = process.env.VUE_APP_GATEWAY_IP
 const hiddenPath = process.env.VUE_APP_HIDDEN_PATH
 const APIKey = process.env.VUE_APP_API_KEY;
@@ -29,28 +29,30 @@ const getGroups = async () => {
         console.log('Groups map: ', groupsMap.value);
         groups.value = response.data;
         console.log('Groups data: ', groups.value);
+        return 0
     } catch (error) {
         console.error('Error API: ', error);
+        return 1
     }
 }
 
 
-const setupAdmin = async (savedList:any) => {
-    await getGroups();
-    console.log(groups.value)
-    savedList.value =  groups.value;
-    const result = ref(Object.values(savedList.value).map(obj => {
-        const { name, state: { all_on } } = obj;
-        return { name, all_on };
-    }));
-    result.value = result.value.filter(room => !room.name.includes('-'));
-    localStorage.setItem("draggable-list", JSON.stringify(result.value));
-    if (savedList.value) {
-        rooms.value = result.value;
-    }
-    if (localStorage.getItem("draggable-list")) {
-        rooms.value = JSON.parse(localStorage.getItem("draggable-list"));
-        console.log(rooms.value)
+const setupAdmin = async (savedList: any) => {
+    const api = await getGroups();
+    if (api == 0) {
+        savedList.value =  groups.value;
+        const result = ref(Object.values(savedList.value).map(obj => {
+            const { name, state: { all_on } } = obj;
+            return { name, all_on };
+        }));
+        result.value = result.value.filter(room => !room.name.includes('-'));
+        localStorage.setItem("draggable-list", JSON.stringify(result.value));
+        if (savedList.value) {
+            rooms.value = result.value;
+        }
+        if (localStorage.getItem("draggable-list")) {
+            rooms.value = JSON.parse(localStorage.getItem("draggable-list"));
+        }
     }
 }
 
@@ -70,6 +72,18 @@ const addRoom = () => {
     const newRoom = message.value
     const newItem = { name: newRoom, lights: false };
     rooms.value.push(newItem);
+}
+
+const fixMessageSyntax = () => {
+    message.value = message.value.replaceAll("-", " ")
+    const separate = message.value.split(" ")
+    message.value = ""
+    for (let i = 0; i < separate.length - 1; i++) {
+        if (separate[i].length > 0)
+            message.value += separate[i] + " "
+    }
+    if (separate[separate.length - 1].length > 0)
+    message.value += separate[separate.length - 1]
 }
 
 const addRoomAdmin = () => {
@@ -126,7 +140,7 @@ const onClickRemoveAdmin = (value) => {
     </draggable>
     <button v-if="$route.path === '/' + hiddenPath " @click="changeMod">Edit mode</button>
     <div v-if="isEdit">
-        <input v-model="message" placeholder="Name of new room"/>
+        <input v-model="message" placeholder="Name of new room" maxlength="16" v-on:input="fixMessageSyntax"/>
         <button v-if="$route.path === '/' + hiddenPath" @click="addRoomAdmin">Add a room</button>
         <button v-else @click="addRoom">Add a room</button>
     </div>

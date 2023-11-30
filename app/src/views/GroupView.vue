@@ -8,6 +8,7 @@ import TopBar from '@/components/TopBar.vue';
 
 const router = useRouter();
 const groupId = decodeURIComponent(router.currentRoute.value.params.groupId);
+const roomName = decodeURIComponent(router.currentRoute.value.params.roomName);
 const group = ref<GroupAttributes>();
 const lights = ref<Light[]>([]);
 const selectedTab = ref('lights');
@@ -19,6 +20,18 @@ const timer = ref(0);
 onMounted(() => {
     getGroup();
 });
+
+const fixMessageSyntax = () => {
+    newGroupName.value = newGroupName.value.replaceAll("-", " ")
+    const separate = newGroupName.value.split(" ")
+    newGroupName.value = ""
+    for (let i = 0; i < separate.length - 1; i++) {
+        if (separate[i].length > 0)
+            newGroupName.value += separate[i] + " "
+    }
+    if (separate[separate.length - 1].length > 0)
+    newGroupName.value += separate[separate.length - 1]
+}
 
 const getGroup = async () => {
     try {
@@ -70,6 +83,7 @@ const cancelRename = () => {
 
 const renameGroup = async () => {
   try {
+    newGroupName.value = roomName.value + "-" + newGroupName.value
     const response = await axios.put(
       `http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/groups/${groupId}`,
       { name: newGroupName.value }
@@ -127,7 +141,7 @@ const setTimer = (time: number) => {
 
     <!-- dialogue pour rename le groupe -->
     <div v-if="renameDialogOpen" class="rename-dialog">
-      <input v-model="newGroupName" type="text" placeholder="Enter new group name" />
+      <input v-model="newGroupName" type="text" placeholder="Enter new group name" maxlength="15" v-on:input="fixMessageSyntax"/>
       <button @click="cancelRename">Cancel</button>
       <button @click="renameGroup">Rename</button>
     </div>
