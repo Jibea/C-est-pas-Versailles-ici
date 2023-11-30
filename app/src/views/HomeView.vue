@@ -75,9 +75,14 @@ const addRoom = () => {
 }
 
 const fixMessageSyntax = () => {
-    message.value = message.value.replaceAll(" ", "")
     message.value = message.value.replaceAll("-", " ")
-    console.log(message.value)
+    const separate = message.value.split(" ")
+    message.value = ""
+    for (let i = 0; i < separate.length - 1; i++) {
+        if (separate[i].length > 0)
+            message.value += separate[i] + " "
+    }
+    message.value += separate[separate.length - 1]
 }
 
 const addRoomAdmin = () => {
