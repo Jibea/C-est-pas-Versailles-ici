@@ -65,12 +65,12 @@ const updateGroupStates = async () => {
     for (const [groupId, group] of Object.entries(groups.value)) {
         try {
             const response = await axios.get(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/groups/${groupId}`);
+            console.log('Response dallumage:', response.data.action.on);
             groups.value[groupId].isOn = response.data.action.on;
         } catch (error) {
-            console.error('Error updating group state: ', error);
+            console.error('Error updating group state:', error);
         }
     }
-
     console.log('Updated groups:', groups.value);
 };
 
@@ -81,20 +81,13 @@ const toggleGroup = async (groupId: string) => {
             console.error('Group not found:', groupId);
             return;
         }
-
-        console.log('Toggling group:', currentGroup);
-
-        const newState = !currentGroup.action.on;
+        const newState = !currentGroup.isOn;
         groupIdToggle.value = groupId;
-
         let payload = { on: newState };
-
         const response = await axios.put(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/groups/${groupId}/action`, payload);
-        console.log('Response: ', response);
-
-        await updateGroupStates();
+        console.log('Response:', response);
     } catch (error) {
-        console.error('Error API: ', error);
+        console.error('Error API:', error);
     } finally {
         groupIdToggle.value = '';
         await getGroups();
@@ -125,7 +118,7 @@ const toggleGroup = async (groupId: string) => {
           <button @click="removeGroup(groupId)" class="remove-button">Remove</button>
 
           <label class="switch">
-            <input type="checkbox" @change="toggleGroup(groupId)" :disabled="groupIdToggle === groupId">
+            <input type="checkbox" @change="toggleGroup(groupId)" :checked="group.isOn" :disabled="groupIdToggle === groupId">
             <span class="slider"></span>
           </label>
         </div>
