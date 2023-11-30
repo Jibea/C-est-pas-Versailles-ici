@@ -19,6 +19,7 @@ const goBack = () => {
     <div class="top-bar">
       <HomeIcon class="home-style"/>
       <font-awesome-icon
+        v-if="$route.path !== '/'"
         :icon="['fas', 'arrow-left']"
         class="arrow-icon"
         @click="goBack"
