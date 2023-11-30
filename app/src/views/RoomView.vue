@@ -9,6 +9,7 @@ import TopBar from '@/components/TopBar.vue';
 const roomName = ref('');
 const groups = ref<GroupsResponse>({});
 const groupName = ref('');
+const groupIdToggle = ref('');
 
 onMounted(() => {
     const route = useRoute();
@@ -34,6 +35,7 @@ const getGroups = async () => {
         const response = await axios.get(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/groups`);
         groups.value = response.data;
         console.log('Groups data: ', groups.value);
+        updateGroupStates();
     } catch (error) {
         console.error('Error API: ', error);
     }
@@ -72,6 +74,39 @@ const filteredGroups = computed(() => {
   });
 });
 
+const updateGroupStates = async () => {
+    for (const [groupId, group] of Object.entries(groups.value)) {
+        try {
+            const response = await axios.get(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/groups/${groupId}`);
+            console.log('Response dallumage:', response.data.action.on);
+            groups.value[groupId].isOn = response.data.action.on;
+        } catch (error) {
+            console.error('Error updating group state:', error);
+        }
+    }
+    console.log('Updated groups:', groups.value);
+};
+
+const toggleGroup = async (groupId: string) => {
+    try {
+        const currentGroup = groups.value[groupId];
+        if (!currentGroup) {
+            console.error('Group not found:', groupId);
+            return;
+        }
+        const newState = !currentGroup.isOn;
+        groupIdToggle.value = groupId;
+        let payload = { on: newState };
+        const response = await axios.put(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/groups/${groupId}/action`, payload);
+        console.log('Response:', response);
+    } catch (error) {
+        console.error('Error API:', error);
+    } finally {
+        groupIdToggle.value = '';
+        await getGroups();
+    }
+};
+
 </script>
 
 <template>
@@ -92,7 +127,14 @@ const filteredGroups = computed(() => {
             <span class="group-name">{{ group.name }}</span>
           </router-link>
     
+        <div class="group-controls">
           <button @click="removeGroup(groupId)" class="remove-button">Remove</button>
+
+          <label class="switch">
+            <input type="checkbox" @change="toggleGroup(groupId)" :checked="group.isOn" :disabled="groupIdToggle === groupId">
+            <span class="slider"></span>
+          </label>
+        </div>
 
         </li>
       </ul>
@@ -169,4 +211,71 @@ const filteredGroups = computed(() => {
   border-radius: 4px;
   cursor: pointer;
 }
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+.group-controls {
+  display: flex;
+  gap: 10px;
+}
+
 </style>

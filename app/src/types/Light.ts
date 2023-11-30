@@ -20,6 +20,7 @@ interface Light {
   swversion: string;
   type: string;
   uniqueid: string;
+  id ?: string; // moi qui l'ajoute pour le front
 }
 
 interface LightsApiResponse {
