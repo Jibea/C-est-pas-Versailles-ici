@@ -54,6 +54,11 @@ const getLight = async (lightId: string) => {
         const response = await axios.get(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/lights/${lightId}`);
         const lightData = response.data;
         lightData.id = lightId;
+
+        // Pour initialiser les valeurs de brightness et temperature du slider lors du reload de la page
+        lightData.state.brightness = lightData.state.bri;
+        lightData.state.temperature = lightData.state.ct;
+
         lights.value.push(lightData);
         console.log('Light data: ', lightData);
     } catch (error) {
@@ -202,7 +207,7 @@ const updateLightState = async (lightId: string) => {
           </div>
 
           <div class="light-controls">
-            
+
             <!-- toggle switch pour eteindre/allumer les lampes -->
             <label class="switch">
               <input type="checkbox" v-model="light.state.on" @change="toggleLight(light)">
