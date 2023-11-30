@@ -217,13 +217,13 @@ const updateLightState = async (lightId: string) => {
             <!-- Brightness Slider -->
             <div class="slider-container">
               <label>Brightness: {{ light.state.brightness }}</label>
-              <input type="range" min="0" max="255" v-model="light.state.brightness" @input="updateLightState(light.id)" />
+              <input type="range" min="0" max="255" v-model="light.state.brightness" @input="updateLightState(light.id)" class="brightness-slider"/>
             </div>
 
             <!-- Temperature Slider -->
             <div class="slider-container">
               <label>Temperature: {{ light.state.temperature }}</label>
-              <input type="range" min="153" max="370" v-model="light.state.temperature" @input="updateLightState(light.id)" />
+              <input type="range" min="153" max="370" v-model="light.state.temperature" @input="updateLightState(light.id)" class="temperature-slider"/>
             </div>
           </div>
 
@@ -497,6 +497,34 @@ input:checked + .slider:before {
 
 .slider-container {
   margin-top: 10px;
+}
+
+input[type="range"].temperature-slider{
+  &::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, rgb(67, 67, 250), rgb(255, 255, 255), rgb(255, 230, 0));
+    border: 2px solid transparent;
+    border-radius: 15px;
+  }
+
+  &::-moz-range-track {
+    background: linear-gradient(to right, rgb(67, 67, 250), rgb(255, 255, 255), rgb(255, 230, 0));
+    border: 2px solid transparent;
+    border-radius: 15px;
+  }
+}
+
+input[type="range"].brightness-slider {
+  &::-webkit-slider-runnable-track {
+  background: linear-gradient(to right, #000, #d1d0d0, #fff);
+    border: 2px solid transparent;
+    border-radius: 15px;
+  }
+
+  &::-moz-range-track {
+    background: linear-gradient(to right, #000, #d1d0d0, #fff);
+    border: 2px solid transparent;
+    border-radius: 15px;
+  }
 }
 
 </style>
