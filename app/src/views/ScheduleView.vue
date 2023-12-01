@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import axios from 'axios';
 import { Schedule } from '@/types/Schedule';
+import TopBar from '@/components/TopBar.vue';
 
 const schedules = ref<Record<string, Schedule>>({});
 const currentGroupId = ref<string>('');
@@ -63,8 +64,11 @@ const modifySchedule = (scheduleId: string) => {
 </script>
 
 <template>
+  <div>
+    <TopBar :title="'Schedule View'" />
+  </div>
+
   <div class="room-view">
-    <h1>Schedule View</h1>
 
     <ul>
       <li v-for="schedule in schedules" :key="schedule.id">
