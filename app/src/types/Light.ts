@@ -1,4 +1,4 @@
-interface Light {
+export interface Light {
   etag: string;
   hascolor: boolean;
   manufacturername: string;
