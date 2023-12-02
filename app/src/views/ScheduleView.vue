@@ -6,6 +6,7 @@ import { Schedule } from '@/types/Schedule';
 import TopBar from '@/components/TopBar.vue';
 
 const schedules = ref<Record<string, Schedule>>({});
+const schedulesLoaded = ref(false);
 const currentGroupId = ref<string>('');
 const selectedSchedule = ref<Schedule | null>(null);
 
@@ -16,50 +17,50 @@ onMounted(() => {
 });
 
 const getSchedule = async () => {
-  try {
-    const response = await axios.get(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/schedules`);
-    console.log('All Schedules:', response.data);
-    const filteredSchedules: Schedule[] = [];
+    try {
+        const response = await axios.get(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/schedules`);
+        console.log('All Schedules:', response.data);
+        const filteredSchedules: Schedule[] = [];
 
-    Object.entries(response.data).forEach(([key, schedule]: [string, unknown]) => {
-      const typeSchedule = schedule as Schedule;
-      if (typeSchedule.command.address.includes(`/groups/${currentGroupId.value}/`)) {
+        Object.entries(response.data).forEach(([key, schedule]: [string, unknown]) => {
+            const typeSchedule = schedule as Schedule;
+            if (typeSchedule.command.address.includes(`/groups/${currentGroupId.value}/`)) {
+                typeSchedule.id = key;
+                filteredSchedules.push(typeSchedule);
+            }
+        });
 
-        typeSchedule.id = key;
-        filteredSchedules.push(typeSchedule);
-      }
-    });
+        console.log('Filtered Schedules:', filteredSchedules);
 
-    console.log('Filtered Schedules:', filteredSchedules);
-
-    schedules.value = filteredSchedules;
-  } catch (error) {
-    console.error(error);
-  }
+        schedules.value = filteredSchedules;
+        schedulesLoaded.value = true;
+    } catch (error) {
+        console.error(error);
+    }
 };
 
 const showDetails = (scheduleId: string) => {
-  console.log('Clicked on scheduleId:', scheduleId);
+    console.log('Clicked on scheduleId:', scheduleId);
 
-  if (scheduleId !== undefined) {
-    const schedule = schedules.value[scheduleId];
-    console.log('Schedule object:', schedule);
+    if (scheduleId !== undefined) {
+        const schedule = Object.values(schedules.value).find((s) => s.id === scheduleId);
 
-    if (schedule) {
-      selectedSchedule.value = schedule;
-      console.log(`Show details for schedule ${scheduleId}`);
+        console.log('Schedule object:', schedule);
+
+        if (schedule) {
+            selectedSchedule.value = schedule;
+            console.log(`Show details for schedule ${scheduleId}`);
+        } else {
+            console.error(`Schedule with id ${scheduleId} not found`);
+        }
     } else {
-      console.error(`Schedule with id ${scheduleId} not found`);
+        console.error('Undefined scheduleId');
     }
-  } else {
-    console.error('Undefined scheduleId');
-  }
 };
 
-
 const modifySchedule = (scheduleId: string) => {
-  console.log(`Modify schedule ${scheduleId}`);
-}
+    console.log(`Modify schedule ${scheduleId}`);
+};
 
 </script>
 
@@ -78,11 +79,10 @@ const modifySchedule = (scheduleId: string) => {
     </ul>
 
     <div v-if="selectedSchedule">
-      <h2 v-if="selectedSchedule.id">{{ selectedSchedule.name }} Details</h2>
-      <p v-if="selectedSchedule.id">Description: {{ selectedSchedule.description }}</p>
-      <p v-if="selectedSchedule.id">Time: {{ selectedSchedule.time }}</p>
-
-      <button v-if="selectedSchedule.id" @click="modifySchedule(selectedSchedule.id)">Modify Schedule</button>
+      <h2>{{ selectedSchedule.name }} Details</h2>
+      <p>Description: {{ selectedSchedule.description }}</p>
+      <p>Time: {{ selectedSchedule.time }}</p>
+      <button @click="modifySchedule(selectedSchedule.id)">Modify Schedule</button>
     </div>
 
   </div>
