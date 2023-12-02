@@ -7,6 +7,6 @@ import { faPen, faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 
 library.add(faPen, faArrowLeft);
 createApp(App)
-.use(router)
 .component("font-awesome-icon", FontAwesomeIcon)
+.use(router)
 .mount('#app')

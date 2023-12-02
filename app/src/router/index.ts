@@ -7,10 +7,12 @@ import ManageLightsView from '../views/ManageLightsView.vue'
 import ScheduleView from '../views/ScheduleView.vue'
 import SensorsControlView from '../views/SensorsControlView.vue'
 import EditSceneView from '../views/EditSceneView.vue'
+import EditRulesView from '../views/EditRulesView.vue'
 
 const routes: Array<RouteRecordRaw> = [
   { path: '/', name: 'home', component: HomeView },
   { path: '/aymeric', name: 'aymeric', component: HomeView },
+  { path: '/editRules', name:'rules', component: EditRulesView },
   { path: '/about', name: 'about', component: AboutView },
   { path: '/room/:roomName', name: 'roomRoute', component: RoomView},
   { path: '/room/:roomName/:groupId', name: 'groupRoute', component: GroupView},
