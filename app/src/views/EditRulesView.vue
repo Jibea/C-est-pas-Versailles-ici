@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import { defineProps, onMounted } from 'vue';
+import { defineProps, onMounted , watch} from 'vue';
 import { useRouter } from 'vue-router';
 import {Sensor} from '@/types/Sensors';
 import {Rule} from '@/types/Rule';
@@ -14,6 +14,7 @@ const conditionSelected = ref('');
 const actionSelected = ref('');
 const groupSelected = ref('');
 const groupId = ref('');
+const fieldsFilled = ref(false);
 
 const ruleName = ref('');
 const rule = ref({
@@ -44,6 +45,19 @@ const groups = ref([]);
 onMounted(() => {
   getAllSensors();
   getAllGroups();
+  checkFields();
+});
+
+const checkFields = () => {
+  if (sensorSelected.value != '' && conditionSelected.value != '' && actionSelected.value != '' && groupSelected.value != '' && ruleName.value != '') {
+    fieldsFilled.value = true;
+  } else {
+    fieldsFilled.value = false;
+  }
+};
+
+watch([sensorSelected, conditionSelected, actionSelected, groupSelected, ruleName], () => {
+  checkFields();
 });
 
 const getAllSensors = async () => {
@@ -137,9 +151,11 @@ const createRule = () => {
           </select>
         </div>
         <button
+          v-if="fieldsFilled == true"
         @click="createRule"
         >Validate</button>
       </section>
+      <h3 v-if="fieldsFilled == false" style="color: red;">  *all fields must be filled</h3>
     </form>
   </div>
 </template>
