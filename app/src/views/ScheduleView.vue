@@ -65,7 +65,6 @@ const showDetails = (scheduleId: string) => {
 
 const openModifyForm = () => {
   selectedDays.value = selectedSchedule.value?.selectedDays || [];
-
   const timeFormat = selectedSchedule.value?.time;
 
   if (timeFormat) {
@@ -117,7 +116,7 @@ const saveModifiedSchedule = async () => {
       command: selectedSchedule.value?.command,
       status: selectedSchedule.value?.status,
       autodelete: selectedSchedule.value?.autodelete,
-      time: selectedSchedule.value?.time,
+      time: formatDaysToRepeatedDays(selectedDays.value) + '/' + formatTimeToTimer(modifiedTime.value || selectedSchedule.value?.time),
       localtime: formatDaysToRepeatedDays(selectedDays.value) + '/' + formatTimeToTimer(modifiedTime.value || selectedSchedule.value?.time),
     };
 
@@ -132,6 +131,7 @@ const saveModifiedSchedule = async () => {
     console.error('Error updating schedule:', error);
   }
 };
+
 
 </script>
 
