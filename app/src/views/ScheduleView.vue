@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import axios from 'axios';
 import { Schedule } from '@/types/Schedule';
@@ -132,6 +132,9 @@ const saveModifiedSchedule = async () => {
   }
 };
 
+const toggleDay = (index: number) => {
+  selectedDays.value[index] = !selectedDays.value[index];
+};
 
 </script>
 
@@ -167,19 +170,16 @@ const saveModifiedSchedule = async () => {
             <label for="time">Time:</label>
             <input v-model="modifiedTime" type="time" id="time" />
           </div>
+
           <div>
             <div>
               {{ selectedDays }}
-              <label for="days">Select Days:</label>
-              <label v-for="(day, index) in daysOfWeek" :key="index">
-                <input
-                  type="checkbox"
-                  v-model="selectedDays[index]"
-                  :value="day"
-                  :checked="selectedSchedule && selectedSchedule.selectedDays && selectedSchedule.selectedDays.includes(day)"
-                />
-                {{ day }}
-              </label>
+              <div class="days-row">
+                <label for="days">Select Days:</label>
+                <div class="day-checkbox" v-for="(day, index) in daysOfWeek" :key="index" @click="toggleDay(index)">
+                  <div :class="{ 'checked': selectedDays[index] }">{{ day.substring(0, 2) }}</div>
+                </div>
+              </div>
             </div>
           </div>
         
@@ -195,5 +195,34 @@ const saveModifiedSchedule = async () => {
 .selected {
     background-color: lightblue;
   }
+
+  .days-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.day-checkbox {
+  cursor: pointer;
+  margin-right: 20px;
+  margin-bottom: 10px;
+  display: flex;
+}
+
+.day-checkbox div {
+  width: 30px;
+  height: 30px;
+  border: 1px solid #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.day-checkbox div.checked {
+  background-color: lightgrey;
+}
+
 
 </style>
