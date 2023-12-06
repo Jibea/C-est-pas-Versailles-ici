@@ -10,5 +10,6 @@ export interface Schedule {
     name: string;
     status: string;
     time: string;
+    localtime: string;
     id: string; // Ajout de l'id pour le front
 }
