@@ -21,11 +21,6 @@ onMounted(() => {
     getSchedule();
 });
 
-const logBinaryRepresentation = (bitmap) => {
-  const binaryRepresentation = bitmap.toString(2).padStart(7, '0'); // Pad to ensure a consistent length
-  console.log('Binary representation:', binaryRepresentation);
-};
-
 const getSchedule = async () => {
   try {
     const response = await axios.get(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/schedules`);
@@ -37,12 +32,6 @@ const getSchedule = async () => {
       if (typeSchedule.command.address.includes(`/groups/${currentGroupId.value}/`)) {
         typeSchedule.id = key;
         filteredSchedules.push(typeSchedule);
-
-        // Log binary representation of selected days for repeated days
-        if (typeSchedule.localtime && typeSchedule.localtime.startsWith('W')) {
-          const bitmap = parseInt(typeSchedule.localtime.substring(1), 10);
-          logBinaryRepresentation(bitmap);
-        }
       }
     });
 
