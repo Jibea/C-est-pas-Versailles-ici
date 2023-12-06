@@ -147,7 +147,7 @@ const toggleDay = (index: number) => {
 
     <ul>
       <li v-for="schedule in schedules" :key="schedule.id">
-        {{ schedule.name }} - {{ schedule.time }}
+        {{ schedule.name }} - {{ schedule.localtime }}
         <button @click="showDetails(schedule.id)">Show Details (ID: {{ schedule.id }})</button>
       </li>
     </ul>
@@ -155,7 +155,7 @@ const toggleDay = (index: number) => {
     <div v-if="selectedSchedule">
       <h2>{{ selectedSchedule.name }} Details</h2>
       <p>Description: {{ selectedSchedule.description }}</p>
-      <p>Time: {{ selectedSchedule.time }}</p>
+      <p>Time: {{ selectedSchedule.localtime }}</p>
       <button @click="openModifyForm">Modify Schedule</button>
     </div>
 
