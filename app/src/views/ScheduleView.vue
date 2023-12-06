@@ -21,28 +21,40 @@ onMounted(() => {
     getSchedule();
 });
 
-const getSchedule = async () => {
-    try {
-        const response = await axios.get(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/schedules`);
-        console.log('All Schedules response.data:', response.data);
-        const filteredSchedules: Schedule[] = [];
-
-        Object.entries(response.data).forEach(([key, schedule]: [string, unknown]) => {
-            const typeSchedule = schedule as Schedule;
-            if (typeSchedule.command.address.includes(`/groups/${currentGroupId.value}/`)) {
-                typeSchedule.id = key;
-                filteredSchedules.push(typeSchedule);
-            }
-        });
-
-        console.log('Filtered Schedules:', filteredSchedules);
-
-        schedules.value = filteredSchedules;
-        schedulesLoaded.value = true;
-    } catch (error) {
-        console.error(error);
-    }
+const logBinaryRepresentation = (bitmap) => {
+  const binaryRepresentation = bitmap.toString(2).padStart(7, '0'); // Pad to ensure a consistent length
+  console.log('Binary representation:', binaryRepresentation);
 };
+
+const getSchedule = async () => {
+  try {
+    const response = await axios.get(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/schedules`);
+    console.log('All Schedules response.data:', response.data);
+    const filteredSchedules: Schedule[] = [];
+
+    Object.entries(response.data).forEach(([key, schedule]: [string, unknown]) => {
+      const typeSchedule = schedule as Schedule;
+      if (typeSchedule.command.address.includes(`/groups/${currentGroupId.value}/`)) {
+        typeSchedule.id = key;
+        filteredSchedules.push(typeSchedule);
+
+        // Log binary representation of selected days for repeated days
+        if (typeSchedule.localtime && typeSchedule.localtime.startsWith('W')) {
+          const bitmap = parseInt(typeSchedule.localtime.substring(1), 10);
+          logBinaryRepresentation(bitmap);
+        }
+      }
+    });
+
+    console.log('Filtered Schedules:', filteredSchedules);
+
+    schedules.value = filteredSchedules;
+    schedulesLoaded.value = true;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 
 const showDetails = (scheduleId: string) => {
     console.log('Clicked on scheduleId:', scheduleId);
@@ -65,12 +77,12 @@ const showDetails = (scheduleId: string) => {
 
 const openModifyForm = () => {
   selectedDays.value = selectedSchedule.value?.selectedDays || [];
-  const timeFormat = selectedSchedule.value?.time;
+  const timeFormat = selectedSchedule.value?.localtime;
 
   if (timeFormat) {
     if (timeFormat.startsWith('W')) {
       const daysBitmap = parseInt(timeFormat.substring(1), 10);
-      selectedDays.value = daysOfWeek.map((day, index) => (daysBitmap & (1 << (index + 1))) !== 0);
+      selectedDays.value = daysOfWeek.map((day, index) => (daysBitmap & (1 << (6 - index))) !== 0);
       modifiedTime.value = '';
     } else if (timeFormat.startsWith('P')) {
       modifiedTime.value = timeFormat.substring(1);
@@ -87,6 +99,7 @@ const openModifyForm = () => {
 
   isModifyFormVisible.value = true;
 };
+
 
 const formatTimeToTimer = (time) => {
   const [hours, minutes] = time.split(':');
