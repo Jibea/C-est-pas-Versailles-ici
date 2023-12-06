@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import axios from 'axios';
 import { Schedule } from '@/types/Schedule';
@@ -136,6 +136,10 @@ const toggleDay = (index: number) => {
   selectedDays.value[index] = !selectedDays.value[index];
 };
 
+const isSaveDisabled = computed(() => {
+  return !modifiedTime.value;
+});
+
 </script>
 
 <template>
@@ -183,7 +187,7 @@ const toggleDay = (index: number) => {
             </div>
           </div>
         
-          <button type="submit">Save Changes</button>
+          <button type="submit" :disabled="isSaveDisabled">Save Changes</button>
         </form>
     </div>
 
