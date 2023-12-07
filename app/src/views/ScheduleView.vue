@@ -103,14 +103,9 @@ const formatTimeToTimer = (time) => {
 const formatDaysToRepeatedDays = (selectedDays) => {
   const repeatedDays = selectedDays.map((day, index) => {
     const bit = day ? 1 : 0;
-    console.log(`Day ${index + 1}: ${bit}`);
     return bit;
   }).join('');
   const decimalValue = parseInt(repeatedDays, 2);
-
-  console.log('Reversed days:', selectedDays.map((day, index) => (day ? 1 : 0)));
-  console.log('Binary representation:', repeatedDays);
-  console.log('Decimal value:', decimalValue);
 
   return `W${decimalValue}`;
 };
@@ -154,7 +149,6 @@ const saveModifiedSchedule = async () => {
     console.error('Error updating schedule:', error);
   }
 };
-
 
 const toggleDay = (index: number) => {
   selectedDays.value[index] = !selectedDays.value[index];
@@ -338,6 +332,5 @@ const deleteSchedule = async (scheduleId: string) => {
 .day-checkbox div.checked {
   background-color: lightgrey;
 }
-
 
 </style>
