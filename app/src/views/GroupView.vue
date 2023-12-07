@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { GroupAttributes } from '@/types/GroupAttributes';
 import axios from 'axios';
-import Light from '@/types/Light';
+import { Light } from '@/types/Light';
 import TopBar from '@/components/TopBar.vue';
 
 const router = useRouter();
