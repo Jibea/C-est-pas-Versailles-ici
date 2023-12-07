@@ -14,11 +14,14 @@ const selectedDays = ref<string[]>([]);
 const isModifyFormVisible = ref(false);
 const modifiedName = ref('');
 const modifiedTime = ref('');
+const scenes = ref<string[]>([]);
+const selectedScene = ref<string>('');
 
 onMounted(() => {
     const route = useRoute();
     currentGroupId.value = route.params.groupId;
     getSchedule();
+    getScenes();
 });
 
 const getSchedule = async () => {
@@ -106,15 +109,32 @@ const formatDaysToRepeatedDays = (selectedDays) => {
 
 const saveModifiedSchedule = async () => {
   try {
-    const requestData = {
-      name: modifiedName.value || selectedSchedule.value?.name,
-      description: selectedSchedule.value?.description,
-      command: selectedSchedule.value?.command,
-      status: selectedSchedule.value?.status,
-      autodelete: selectedSchedule.value?.autodelete,
-      time: formatDaysToRepeatedDays(selectedDays.value) + '/' + formatTimeToTimer(modifiedTime.value || selectedSchedule.value?.time),
-      localtime: formatDaysToRepeatedDays(selectedDays.value) + '/' + formatTimeToTimer(modifiedTime.value || selectedSchedule.value?.time),
-    };
+    let requestData;
+
+    if (modifiedName.value === 'call scene') {
+      requestData = {
+        name: modifiedName.value || selectedSchedule.value?.name,
+        command: {
+          address: `/api/${process.env.VUE_APP_API_KEY}/scenes/${selectedScene.value}/recall`,
+          body: {},
+          method: 'PUT',
+        },
+        status: selectedSchedule.value?.status,
+        autodelete: selectedSchedule.value?.autodelete,
+        time: formatDaysToRepeatedDays(selectedDays.value) + '/' + formatTimeToTimer(modifiedTime.value || selectedSchedule.value?.time),
+        localtime: formatDaysToRepeatedDays(selectedDays.value) + '/' + formatTimeToTimer(modifiedTime.value || selectedSchedule.value?.time),
+      };
+    } else {
+      requestData = {
+        name: modifiedName.value || selectedSchedule.value?.name,
+        description: selectedSchedule.value?.description,
+        command: selectedSchedule.value?.command,
+        status: selectedSchedule.value?.status,
+        autodelete: selectedSchedule.value?.autodelete,
+        time: formatDaysToRepeatedDays(selectedDays.value) + '/' + formatTimeToTimer(modifiedTime.value || selectedSchedule.value?.time),
+        localtime: formatDaysToRepeatedDays(selectedDays.value) + '/' + formatTimeToTimer(modifiedTime.value || selectedSchedule.value?.time),
+      };
+    }
 
     console.log('Modified schedule:', requestData, "for id ", selectedSchedule.value?.id);
 
@@ -127,6 +147,7 @@ const saveModifiedSchedule = async () => {
     console.error('Error updating schedule:', error);
   }
 };
+
 
 const toggleDay = (index: number) => {
   selectedDays.value[index] = !selectedDays.value[index];
@@ -145,6 +166,17 @@ const toggleActivation = async () => {
     } catch (error) {
         console.error('Error toggling schedule activation:', error);
     }
+};
+
+const getScenes = async () => {
+  try {
+    const response = await axios.get(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/groups/${currentGroupId.value}/scenes`);
+    console.log('All Scenes response.data:', response.data);
+
+    scenes.value = Object.values(response.data).map((scene: any) => scene.name);
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 </script>
@@ -192,6 +224,13 @@ const toggleActivation = async () => {
                 </div>
               </div>
             </div>
+          </div>
+
+          <div>
+            <label for="scene">Select Scene:</label>
+            <select v-model="selectedScene" id="scene">
+              <option v-for="(scene, index) in scenes" :key="index" :value="scene">{{ scene }}</option>
+            </select>
           </div>
         
           <button type="submit" :disabled="isSaveDisabled">Save Changes</button>
