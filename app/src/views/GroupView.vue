@@ -70,10 +70,6 @@ const showLights = () => {
   selectedTab.value = 'lights';
 }
 
-const showScenes = () => {
-  selectedTab.value = 'scenes';
-}
-
 const editGroup = () => {
   selectedTab.value = 'editGroup';
 }
@@ -184,7 +180,6 @@ const updateLightState = async (lightId: string) => {
     <p class="group-id">Group ID: {{ group?.id }}</p>
 
     <button @click="showLights">Show Lights</button>
-    <button @click="showScenes">Show Scenes</button>
     <button @click="editGroup">Edit Group</button>
 
     <!-- dialogue pour rename le groupe -->
@@ -227,19 +222,6 @@ const updateLightState = async (lightId: string) => {
             </div>
           </div>
 
-        </li>
-      </ul>
-    </div>
-
-
-    <!-- pour montrer les scenes -->
-    <div v-if="selectedTab === 'scenes'">
-      <ul class="scene-list">
-        <li v-for="scene in group?.scenes" :key="scene.id" class="scene-item">
-          <div class="scene-info">
-            <p class="item-name">{{ scene.name }}</p>
-            <p>Scene ID: {{ scene.id }}</p>
-          </div>
         </li>
       </ul>
     </div>
@@ -309,12 +291,6 @@ h1 {
   flex-direction: column;
 }
 
-.item-name {
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 5px;
-}
-
 .light-state {
   font-size: 16px;
   color: #4CAF50;
@@ -348,22 +324,6 @@ button:active {
 ul.light-list {
   list-style: none;
   padding: 0;
-}
-
-.scene-list {
-  list-style: none;
-  padding: 0;
-}
-
-.scene-item {
-  border: 1px solid #ddd;
-  margin: 5px 0;
-  padding: 10px;
-}
-
-.scene-info {
-  display: flex;
-  justify-content: space-between;
 }
 
 .edit-group-section {
