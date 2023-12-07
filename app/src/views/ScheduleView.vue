@@ -221,6 +221,16 @@ const addSchedule = async () => {
   }
 };
 
+const deleteSchedule = async (scheduleId: string) => {
+  try {
+    await axios.delete(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/schedules/${scheduleId}`);
+    await getSchedule();
+    console.log(`Schedule ${scheduleId} deleted successfully`);
+  } catch (error) {
+    console.error(`Error deleting schedule ${scheduleId}:`, error);
+  }
+};
+
 </script>
 
 <template>
@@ -248,6 +258,7 @@ const addSchedule = async () => {
       <li v-for="schedule in schedules" :key="schedule.id">
         {{ schedule.name }} - {{ schedule.localtime }}
         <button @click="showDetails(schedule.id)">Show Details (ID: {{ schedule.id }})</button>
+        <button @click="deleteSchedule(schedule.id)">Delete</button>
       </li>
     </ul>
 
