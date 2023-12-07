@@ -56,8 +56,6 @@ const getSchedule = async () => {
 };
 
 const showDetails = (scheduleId: string) => {
-    console.log('Clicked on scheduleId:', scheduleId);
-
     if (scheduleId !== undefined) {
         const schedule = Object.values(schedules.value).find((s) => s.id === scheduleId);
 
@@ -84,9 +82,7 @@ const showDetails = (scheduleId: string) => {
                 }
             } else {
                 modifiedTime.value = '';
-            }
-            
-            console.log(`Show details for schedule ${scheduleId}`);
+            }            
         } else {
             console.error(`Schedule with id ${scheduleId} not found`);
         }
