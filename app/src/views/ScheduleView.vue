@@ -44,7 +44,6 @@ const getSchedule = async () => {
   }
 };
 
-
 const showDetails = (scheduleId: string) => {
     console.log('Clicked on scheduleId:', scheduleId);
 
@@ -55,6 +54,27 @@ const showDetails = (scheduleId: string) => {
 
         if (schedule) {
             selectedSchedule.value = schedule;
+            selectedDays.value = schedule.selectedDays || [];
+            modifiedName.value = schedule.name || '';
+            
+            const timeFormat = schedule.localtime;
+
+            if (timeFormat) {
+                if (timeFormat.startsWith('W')) {
+                    const daysBitmap = parseInt(timeFormat.substring(1), 10);
+                    selectedDays.value = daysOfWeek.map((day, index) => (daysBitmap & (1 << (6 - index))) !== 0);
+                    modifiedTime.value = '';
+                } else if (timeFormat.startsWith('P')) {
+                    modifiedTime.value = timeFormat.substring(1);
+                } else if (timeFormat.startsWith('R')) {
+                    modifiedTime.value = timeFormat.substring(1);
+                } else {
+                    modifiedTime.value = timeFormat;
+                }
+            } else {
+                modifiedTime.value = '';
+            }
+            
             console.log(`Show details for schedule ${scheduleId}`);
         } else {
             console.error(`Schedule with id ${scheduleId} not found`);
@@ -63,32 +83,6 @@ const showDetails = (scheduleId: string) => {
         console.error('Undefined scheduleId');
     }
 };
-
-const openModifyForm = () => {
-  selectedDays.value = selectedSchedule.value?.selectedDays || [];
-  const timeFormat = selectedSchedule.value?.localtime;
-
-  if (timeFormat) {
-    if (timeFormat.startsWith('W')) {
-      const daysBitmap = parseInt(timeFormat.substring(1), 10);
-      selectedDays.value = daysOfWeek.map((day, index) => (daysBitmap & (1 << (6 - index))) !== 0);
-      modifiedTime.value = '';
-    } else if (timeFormat.startsWith('P')) {
-      modifiedTime.value = timeFormat.substring(1);
-    } else if (timeFormat.startsWith('R')) {
-      modifiedTime.value = timeFormat.substring(1);
-    } else {
-      modifiedTime.value = timeFormat;
-    }
-  } else {
-    modifiedTime.value = '';
-  }
-
-  modifiedName.value = selectedSchedule.value?.name || '';
-
-  isModifyFormVisible.value = true;
-};
-
 
 const formatTimeToTimer = (time) => {
   const [hours, minutes] = time.split(':');
@@ -142,6 +136,17 @@ const isSaveDisabled = computed(() => {
   return !modifiedTime.value;
 });
 
+const toggleActivation = async () => {
+    try {
+        const newStatus = selectedSchedule.value?.status === 'enabled' ? 'disabled' : 'enabled';
+        await axios.put(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/schedules/${selectedSchedule.value?.id}`, { status: newStatus });
+        selectedSchedule.value!.status = newStatus;
+        console.log(`Schedule ${selectedSchedule.value?.id} ${newStatus === 'enabled' ? 'activated' : 'deactivated'} successfully`);
+    } catch (error) {
+        console.error('Error toggling schedule activation:', error);
+    }
+};
+
 </script>
 
 <template>
@@ -162,7 +167,7 @@ const isSaveDisabled = computed(() => {
       <h2>{{ selectedSchedule.name }} Details</h2>
       <p>Description: {{ selectedSchedule.description }}</p>
       <p>Time: {{ selectedSchedule.localtime }}</p>
-      <button @click="openModifyForm">Modify Schedule</button>
+      <button @click="toggleActivation">{{ selectedSchedule.status === 'enabled' ? 'Deactivate' : 'Activate' }}</button>
     </div>
 
     <div v-show="isModifyFormVisible || selectedDays.length > 0">
