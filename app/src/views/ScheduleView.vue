@@ -16,6 +16,15 @@ const modifiedName = ref('');
 const modifiedTime = ref('');
 const scenes = ref<string[]>([]);
 const selectedScene = ref<string>('');
+const isAddFormVisible = ref(false);
+const newScheduleName = ref('');
+const newScheduleDescription = ref('');
+const newScheduleCommandMethod = ref('PUT');
+const newScheduleCommandBody = ref({});
+const newScheduleStatus = ref('enabled');
+const newScheduleAutodelete = ref(false);
+const now = new Date();
+const newScheduleTime = ref(`${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}T00:00:00`);
 
 onMounted(() => {
     const route = useRoute();
@@ -179,6 +188,39 @@ const getScenes = async () => {
   }
 };
 
+const openAddScheduleForm = () => {
+  isAddFormVisible.value = true;
+};
+
+const addSchedule = async () => {
+  try {
+    if (!newScheduleName.value.trim()) {
+      console.error('Please enter a valid schedule name.');
+      return;
+    }
+
+    const requestData = {
+      name: newScheduleName.value,
+      description: newScheduleDescription.value,
+      command: {
+        address: `/api/${process.env.VUE_APP_API_KEY}/groups/${currentGroupId.value}/action`,
+        method: newScheduleCommandMethod.value,
+        body: newScheduleCommandBody.value,
+      },
+      status: newScheduleStatus.value,
+      autodelete: newScheduleAutodelete.value,
+      time: newScheduleTime.value,
+    };
+
+    await axios.post(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/schedules`, requestData);
+    await getSchedule();
+    isAddFormVisible.value = false;
+    console.log('Schedule added successfully');
+  } catch (error) {
+    console.error('Error adding schedule:', error);
+  }
+};
+
 </script>
 
 <template>
@@ -187,6 +229,20 @@ const getScenes = async () => {
   </div>
 
   <div class="room-view">
+
+    <button @click="openAddScheduleForm">Add Schedule</button>
+
+    <!-- to add a schedule -->
+    <div v-show="isAddFormVisible">
+      <h2>Add Schedule</h2>
+      <form @submit.prevent="addSchedule">
+        <div>
+          <label for="newScheduleName">Name:</label>
+          <input v-model="newScheduleName" type="text" id="newScheduleName" />
+        </div>
+        <button type="submit">Add Schedule</button>
+      </form>
+    </div>
 
     <ul>
       <li v-for="schedule in schedules" :key="schedule.id">
