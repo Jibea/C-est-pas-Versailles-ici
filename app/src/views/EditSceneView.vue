@@ -3,9 +3,10 @@ import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
 import TopBar from '@/components/TopBar.vue';
+import { Scene } from '@/types/Scene';
 
 const router = useRouter();
-const scenes: any = ref()
+const scenes: Scene[] = ref();
 const groupId = decodeURIComponent(router.currentRoute.value.params.groupId);
 
 onMounted(() => {
@@ -28,10 +29,10 @@ const getScenes = async () => {
 <template>
   <TopBar title="Edit Scene" />
   <ul class="scene-list">
-    <li v-for="scene in scenes" :key="scene.id" class="scene-item">
+    <li v-for="scene in scenes" :key="scene.name" class="scene-item">
       <div class="scene-info">
         <p class="item-name">{{ scene.name }}</p>
-        <p>Scene ID: {{ scene.id }}</p>
+        <p>Scene ID: {{ scene.transitiontime }}</p>
       </div>
     </li>
   </ul>
