@@ -11,7 +11,6 @@ const currentGroupId = ref<string>('');
 const selectedSchedule = ref<Schedule | null>(null);
 const daysOfWeek = [ 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday',];
 const selectedDays = ref<string[]>([]);
-const isModifyFormVisible = ref(false);
 const modifiedName = ref('');
 const modifiedTime = ref('');
 const scenes = ref<string[]>([]);
@@ -149,7 +148,6 @@ const saveModifiedSchedule = async () => {
 
     await axios.put(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/schedules/${selectedSchedule.value?.id}`, requestData);
     await getSchedule();
-    isModifyFormVisible.value = false;
 
     console.log('Schedule updated successfully');
   } catch (error) {
