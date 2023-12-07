@@ -8,6 +8,7 @@ import { SceneAttributes } from '@/types/SceneAttributes';
 
 const router = useRouter();
 const scenes = ref<Scene>({});
+const indexClicked = ref(0);
 const sceneInfos = ref<SceneAttributes>({
   lights: [],
   name: "",
@@ -41,16 +42,26 @@ const getSceneInfo = async (id: number) => {
     }
 }
 
+const clickedScene = (index: number) => {
+  if (indexClicked.value != index)
+    indexClicked.value = index;
+  else
+    indexClicked.value = 0
+  console.log(`change index to ${indexClicked.value}`)
+}
+
 </script>
 
 <template>
   <TopBar title="Edit Scene" />
   <ul class="scene-list">
-    <li v-for="(scene, index) in scenes" :key="scene.name" class="scene-item">
+    <li v-for="(scene, index) in scenes" :key="scene.name" >
+      <button @click="clickedScene(index)" class="scene-button">
       <div class="scene-info">
         <p class="item-name">{{ scene.name }}</p>
-        <p>Scene ID: {{ index }}</p>
       </div>
+    </button>
+    <p v-if="index == indexClicked" >cliked on {{ index }} </p>
     </li>
   </ul>
 </template>
@@ -62,10 +73,13 @@ const getSceneInfo = async (id: number) => {
   padding: 0;
 }
 
-.scene-item {
+.scene-button {
+  cursor: pointer;
   border: 1px solid #ddd;
   margin: 5px 0;
   padding: 10px;
+  width: 40%;
+  border-radius: 15px;
 }
 
 .scene-info {
