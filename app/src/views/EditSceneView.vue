@@ -4,13 +4,20 @@ import { useRouter } from 'vue-router';
 import axios from 'axios';
 import TopBar from '@/components/TopBar.vue';
 import { Scene } from '@/types/Scene';
+import { SceneAttributes } from '@/types/SceneAttributes';
 
 const router = useRouter();
-const scenes: Scene = ref<Scene>();
+const scenes = ref<Scene>({});
+const sceneInfos = ref<SceneAttributes>({
+  lights: [],
+  name: "",
+  state: 0,
+});
 const groupId = decodeURIComponent(router.currentRoute.value.params.groupId);
 
 onMounted(() => {
     getScenes()
+    // getSceneInfo(1)
 
 });
 
@@ -18,8 +25,17 @@ const getScenes = async () => {
     try {
         const response = await axios.get(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/groups/${groupId}/scenes`);
         scenes.value = response.data;
-        console.log('Group data: ', response.data);
         // console.log('scenes data: ', scenes.value[1].transitiontime);
+    } catch (error) {
+        console.error('Error API: ', error);
+    }
+}
+
+const getSceneInfo = async (id: number) => {
+    try {
+        const response = await axios.get(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/groups/${groupId}/scenes/${id}`);
+        sceneInfos.value = response.data;
+        console.log('sceneInfos data: ', sceneInfos.value);
     } catch (error) {
         console.error('Error API: ', error);
     }
@@ -53,7 +69,6 @@ const getScenes = async () => {
 }
 
 .scene-info {
-  display: flex;
   justify-content: space-between;
 }
 
