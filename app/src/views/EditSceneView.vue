@@ -6,7 +6,7 @@ import TopBar from '@/components/TopBar.vue';
 import { Scene } from '@/types/Scene';
 
 const router = useRouter();
-const scenes: Scene[] = ref();
+const scenes: Scene = ref<Scene>();
 const groupId = decodeURIComponent(router.currentRoute.value.params.groupId);
 
 onMounted(() => {
@@ -19,6 +19,7 @@ const getScenes = async () => {
         const response = await axios.get(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/groups/${groupId}/scenes`);
         scenes.value = response.data;
         console.log('Group data: ', response.data);
+        // console.log('scenes data: ', scenes.value[1].transitiontime);
     } catch (error) {
         console.error('Error API: ', error);
     }
@@ -29,10 +30,10 @@ const getScenes = async () => {
 <template>
   <TopBar title="Edit Scene" />
   <ul class="scene-list">
-    <li v-for="scene in scenes" :key="scene.name" class="scene-item">
+    <li v-for="(scene, index) in scenes" :key="scene.name" class="scene-item">
       <div class="scene-info">
         <p class="item-name">{{ scene.name }}</p>
-        <p>Scene ID: {{ scene.transitiontime }}</p>
+        <p>Scene ID: {{ index }}</p>
       </div>
     </li>
   </ul>
