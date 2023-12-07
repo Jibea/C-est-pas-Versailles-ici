@@ -18,8 +18,6 @@ const groupId = decodeURIComponent(router.currentRoute.value.params.groupId);
 
 onMounted(() => {
     getScenes()
-    // getSceneInfo(1)
-
 });
 
 const getScenes = async () => {
@@ -42,11 +40,13 @@ const getSceneInfo = async (id: number) => {
     }
 }
 
-const clickedScene = (index: number) => {
-  if (indexClicked.value != index)
+const clickedScene = async (index: number) => {
+  if (indexClicked.value != index) {
+    await getSceneInfo(index);
     indexClicked.value = index;
-  else
+  } else {
     indexClicked.value = 0
+  }
   console.log(`change index to ${indexClicked.value}`)
 }
 
@@ -61,7 +61,9 @@ const clickedScene = (index: number) => {
         <p class="item-name">{{ scene.name }}</p>
       </div>
     </button>
-    <p v-if="index == indexClicked" >cliked on {{ index }} </p>
+    <div v-if="index == indexClicked">
+      <p>cliked on {{ sceneInfos.name }} </p>
+    </div>
     </li>
   </ul>
 </template>
