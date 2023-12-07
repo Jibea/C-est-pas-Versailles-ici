@@ -269,7 +269,7 @@ const deleteSchedule = async (scheduleId: string) => {
       <button @click="toggleActivation">{{ selectedSchedule.status === 'enabled' ? 'Deactivate' : 'Activate' }}</button>
     </div>
 
-    <div v-show="isModifyFormVisible || selectedDays.length > 0">
+    <div>
       <h2>Modify Schedule</h2>
         <form @submit.prevent="saveModifiedSchedule">
           <div>
