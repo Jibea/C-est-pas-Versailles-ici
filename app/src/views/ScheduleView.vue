@@ -183,7 +183,12 @@ const getScenes = async () => {
 };
 
 const openAddScheduleForm = () => {
-  isAddFormVisible.value = true;
+  isAddFormVisible.value = !isAddFormVisible.value;
+
+  if (!isAddFormVisible.value) {
+    newScheduleName.value = '';
+    newScheduleDescription.value = '';
+  }
 };
 
 const addSchedule = async () => {
@@ -236,7 +241,7 @@ const deleteSchedule = async (scheduleId: string) => {
   <div class="room-view">
 
     <div class="add-schedule-container">
-      <button @click="openAddScheduleForm">Add Schedule</button>
+      <button v-if="!isAddFormVisible" @click="openAddScheduleForm">Add Schedule</button>
       
       <!-- to add a schedule -->
       <div v-show="isAddFormVisible">
