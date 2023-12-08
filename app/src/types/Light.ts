@@ -9,22 +9,22 @@ export interface Light {
     alert: string;
     bri: number;
     colormode: string;
-    ct: number;
+    ct?: number;
     effect: string;
     hue: number;
     on: boolean;
     reachable: boolean;
-    sat: number;
-    xy: [number, number];
+    sat?: number;
+    xy?: [number, number];
   };
   swversion: string;
   type: string;
   uniqueid: string;
-  ctmax: number;
-  ctmin: number;
+  ctmax?: number;
+  ctmin?: number;
   id ?: string; // moi qui l'ajoute pour le front
 }
 
-interface LightsApiResponse {
+export interface LightsApiResponse {
   [key: string]: Light;
 }
