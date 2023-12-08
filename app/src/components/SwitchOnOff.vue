@@ -30,12 +30,17 @@ watch(isLightOn, (newState) => {
     isLightOn.value = newState;
 });
 
+watch(groupState, (newState) => {
+    console.log('groupState:', newState);
+    groupState.value = newState;
+});
+
 
 const getGroup = () => {
     axios.get(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/groups/${groupId.value}`)
         .then(response => {
-            groupState.value = response.data.action.on;
-            isSwitchOnOff.value = response.data.action.on;
+            groupState.value = response.data.state.any_on;
+            isSwitchOnOff.value = response.data.state.any_on;
         })
         .catch(error => {
             console.error('Error updating group state:', error);
