@@ -9,6 +9,7 @@ import { SceneAttributes } from '@/types/SceneAttributes';
 const router = useRouter();
 const scenes = ref<Scene>({});
 const indexClicked = ref(0);
+const message = ref('');
 const sceneInfos = ref<SceneAttributes>({
   lights: [],
   name: "",
@@ -48,6 +49,17 @@ const clickedScene = async (index: number) => {
     indexClicked.value = 0
   }
   console.log(`change index to ${indexClicked.value}`)
+}
+
+const addScene = () => {
+    axios.post(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/groups/${groupId}/scenes`, {
+        name: message.value,
+    }).then((response) => {
+            console.log(response);
+            window.location.reload();
+        }, (error) => {
+            console.log(error);
+        });
 }
 
 </script>
