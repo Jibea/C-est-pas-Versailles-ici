@@ -145,7 +145,7 @@ const toggleDay = (index: number) => {
 };
 
 const isSaveDisabled = computed(() => {
-  return !modifiedTime.value;
+  return !modifiedTime.value || selectedScene.value === null;
 });
 
 const toggleActivation = async () => {
