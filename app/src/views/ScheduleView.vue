@@ -224,47 +224,57 @@ const deleteSchedule = async (scheduleId: string) => {
 
   <div class="room-view">
 
-    <button @click="openAddScheduleForm">Add Schedule</button>
-
-    <!-- to add a schedule -->
-    <div v-show="isAddFormVisible">
-      <h2>Add Schedule</h2>
-      <form @submit.prevent="addSchedule">
-        <div>
-          <label for="newScheduleName">Name:</label>
-          <input v-model="newScheduleName" type="text" id="newScheduleName" />
-        </div>
-        <button type="submit">Add Schedule</button>
-      </form>
+    <div class="add-schedule-container">
+      <button @click="openAddScheduleForm">Add Schedule</button>
+      
+      <!-- to add a schedule -->
+      <div v-show="isAddFormVisible">
+        <h2>Add Schedule</h2>
+        <form @submit.prevent="addSchedule">
+          <div>
+            <label for="newScheduleName">Name:</label>
+            <input v-model="newScheduleName" type="text" id="newScheduleName" />
+          </div>
+          <button type="submit">Add Schedule</button>
+        </form>
+      </div>
     </div>
 
-    <ul>
-      <li v-for="schedule in schedules" :key="schedule.id">
+    <!-- list of schedules -->
+    <ul class="schedule-list">
+      <li v-for="schedule in schedules" :key="schedule.id" class="schedule-item">
         {{ schedule.name }} - {{ schedule.localtime }}
         <button @click="showDetails(schedule.id)">Show Details (ID: {{ schedule.id }})</button>
         <font-awesome-icon @click="deleteSchedule(schedule.id)" icon="trash" />
       </li>
     </ul>
 
-    <div v-if="selectedSchedule">
+    <!-- schedule details -->
+    <div v-if="selectedSchedule" class="schedule-details">
       <h2>{{ selectedSchedule.name }} Details</h2>
       <p>Description: {{ selectedSchedule.description }}</p>
       <p>Time: {{ selectedSchedule.localtime }}</p>
       <button @click="toggleActivation">{{ selectedSchedule.status === 'enabled' ? 'Deactivate' : 'Activate' }}</button>
     </div>
 
-    <div>
+    <!-- modify schedule form -->
+    <div class="modify-schedule-container">
       <h2>Modify Schedule</h2>
         <form @submit.prevent="saveModifiedSchedule">
+
+          <!-- to change name -->
           <div>
             <label for="name">Name:</label>
             <input v-model="modifiedName" type="text" id="name" />
           </div>
+
+          <!-- to change time -->
           <div>
             <label for="time">Time:</label>
             <input v-model="modifiedTime" type="time" id="time" />
           </div>
 
+          <!-- to choose days -->
           <div>
             <div>
               {{ selectedDays }}
@@ -277,6 +287,7 @@ const deleteSchedule = async (scheduleId: string) => {
             </div>
           </div>
 
+          <!-- to choose a scene -->
           <div>
             <label for="scene">Select Scene:</label>
             <select v-model="selectedScene" id="scene">
@@ -324,5 +335,72 @@ const deleteSchedule = async (scheduleId: string) => {
 .day-checkbox div.checked {
   background-color: lightgrey;
 }
+.room-view {
+  padding: 20px;
+}
+
+.add-schedule-container {
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.schedule-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.schedule-item {
+    border: 1px solid #ccc;
+    margin: 0 auto;
+    margin-bottom: 5px;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 700px;
+    width: 100%;
+  }
+
+.schedule-details {
+  margin-top: 20px;
+}
+
+.modify-schedule-container {
+  margin-top: 20px;
+}
+
+.modify-schedule-container form {
+    display: flex;
+    flex-direction: column;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .modify-schedule-container label {
+    margin-bottom: 8px;
+    font-weight: bold;
+  }
+
+  .modify-schedule-container input,
+  .modify-schedule-container select,
+  .modify-schedule-container button {
+    margin-bottom: 16px;
+    padding: 8px;
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .modify-schedule-container button {
+    background-color: #4caf50;
+    color: white;
+    cursor: pointer;
+  }
+
+  .modify-schedule-container button:disabled {
+    background-color: #ddd;
+    color: #666;
+    cursor: not-allowed;
+  }
 
 </style>
