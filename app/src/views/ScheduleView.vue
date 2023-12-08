@@ -462,4 +462,8 @@ const deleteSchedule = async (scheduleId: string) => {
     background-color: #ccc;
   }
 
+  .add-schedule-container form > div {
+    margin-bottom: 10px;
+  }
+
 </style>
