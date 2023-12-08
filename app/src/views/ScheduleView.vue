@@ -242,7 +242,7 @@ const deleteSchedule = async (scheduleId: string) => {
       <li v-for="schedule in schedules" :key="schedule.id">
         {{ schedule.name }} - {{ schedule.localtime }}
         <button @click="showDetails(schedule.id)">Show Details (ID: {{ schedule.id }})</button>
-        <button @click="deleteSchedule(schedule.id)">Delete</button>
+        <font-awesome-icon @click="deleteSchedule(schedule.id)" icon="trash" />
       </li>
     </ul>
 
