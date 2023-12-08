@@ -1,4 +1,4 @@
-interface SceneInfo {
+export interface SceneInfo {
     lights: string[];
     name: string;
     transitiontime: number;
