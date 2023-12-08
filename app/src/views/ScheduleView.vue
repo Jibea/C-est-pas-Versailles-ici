@@ -255,7 +255,7 @@ const deleteSchedule = async (scheduleId: string) => {
     <ul class="schedule-list">
       <li v-for="schedule in schedules" :key="schedule.id" class="schedule-item">
         {{ schedule.name }} - {{ schedule.localtime }}
-        <button @click="showDetails(schedule.id)">Show Details (ID: {{ schedule.id }})</button>
+        <button @click="showDetails(schedule.id)" class="details-button"> Show Details (ID: {{ schedule.id }}) </button>
         <font-awesome-icon @click="deleteSchedule(schedule.id)" icon="trash" />
       </li>
     </ul>
@@ -265,7 +265,9 @@ const deleteSchedule = async (scheduleId: string) => {
       <h2>{{ selectedSchedule.name }} Details</h2>
       <p>Description: {{ selectedSchedule.description }}</p>
       <p>Time: {{ selectedSchedule.localtime }}</p>
-      <button @click="toggleActivation">{{ selectedSchedule.status === 'enabled' ? 'Deactivate' : 'Activate' }}</button>
+      <button @click="toggleActivation" :class="{ 'activate-button': selectedSchedule.status === 'disabled', 'deactivate-button': selectedSchedule.status === 'enabled' }">
+        {{ selectedSchedule.status === 'enabled' ? 'Deactivate' : 'Activate' }}
+      </button>
     </div>
 
     <!-- modify schedule form -->
@@ -413,6 +415,47 @@ const deleteSchedule = async (scheduleId: string) => {
     background-color: #ddd;
     color: #666;
     cursor: not-allowed;
+  }
+
+  button {
+    padding: 10px;
+    background-color: #4caf50;
+    color: white;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+
+  button:hover {
+    background-color: #45a049;
+  }
+
+  .activate-button {
+    background-color: #5cb85c;
+  }
+
+  .deactivate-button {
+    background-color: #d9534f;
+  }
+
+  .activate-button:hover,
+  .deactivate-button:hover {
+    background-color: #4cae4c;
+  }
+
+  .details-button {
+    padding: 10px;
+    background-color: #999;
+    color: white;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+
+  .details-button:hover {
+    background-color: #ccc;
   }
 
 </style>
