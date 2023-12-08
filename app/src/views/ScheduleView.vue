@@ -200,6 +200,7 @@ const addSchedule = async () => {
     await axios.post(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/schedules`, requestData);
     await getSchedule();
     isAddFormVisible.value = false;
+    newScheduleName.value = '';
     console.log('Schedule added successfully');
   } catch (error) {
     console.error('Error adding schedule:', error);
