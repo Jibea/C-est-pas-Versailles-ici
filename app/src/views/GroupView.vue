@@ -5,6 +5,7 @@ import { GroupAttributes } from '@/types/GroupAttributes';
 import axios from 'axios';
 import { Light } from '@/types/Light';
 import TopBar from '@/components/TopBar.vue';
+import BrightnessSlide from '@/components/BrightnessSlide.vue';
 
 const router = useRouter();
 const groupId = decodeURIComponent(router.currentRoute.value.params.groupId);
@@ -55,8 +56,7 @@ const getLight = async (lightId: string) => {
         const lightData = response.data;
         lightData.id = lightId;
 
-        // Pour initialiser les valeurs de brightness et temperature du slider lors du reload de la page
-        lightData.state.brightness = lightData.state.bri;
+        // Pour initialiser la valeur de temperature du slider lors du reload de la page
         lightData.state.temperature = lightData.state.ct;
 
         lights.value.push(lightData);
@@ -143,12 +143,10 @@ const updateLightState = async (lightId: string) => {
     return;
   }
 
-  const validBrightness = Math.min(255, Math.max(0, light.state.brightness));
   const validTemperature = Math.min(light.ctmax, Math.max(light.ctmin, light.state.temperature));
 
   const payload = {
     on: light.state.on,
-    bri: validBrightness,
     ct: validTemperature,
   };
 
@@ -208,12 +206,10 @@ const updateLightState = async (lightId: string) => {
               <input type="checkbox" v-model="light.state.on" @change="toggleLight(light)">
               <span class="slider"></span>
             </label>
+            <p> {{ light.id }}</p>
 
             <!-- Brightness Slider -->
-            <div class="slider-container">
-              <label>Brightness: {{ light.state.brightness }}</label>
-              <input type="range" min="0" max="255" v-model="light.state.brightness" @input="updateLightState(light.id)" class="brightness-slider"/>
-            </div>
+            <BrightnessSlide :lightId="light.id" />
 
             <!-- Temperature Slider -->
             <div class="slider-container">
@@ -240,7 +236,7 @@ const updateLightState = async (lightId: string) => {
       <router-link :to="{ name: 'scheduleRoute', params: { groupId: group?.id } }">
         <button>Schedule</button>
       </router-link>
-      
+
       <router-link :to="{ name: 'sensorsControlRoute', params: { groupId: group?.id } }">
         <button>Sensor Control</button>
       </router-link>
@@ -468,20 +464,6 @@ input[type="range"].temperature-slider{
 
   &::-moz-range-track {
     background: linear-gradient(to right, rgb(67, 67, 250), rgb(255, 255, 255), rgb(255, 230, 0));
-    border: 2px solid transparent;
-    border-radius: 15px;
-  }
-}
-
-input[type="range"].brightness-slider {
-  &::-webkit-slider-runnable-track {
-  background: linear-gradient(to right, #000, #d1d0d0, #fff);
-    border: 2px solid transparent;
-    border-radius: 15px;
-  }
-
-  &::-moz-range-track {
-    background: linear-gradient(to right, #000, #d1d0d0, #fff);
     border: 2px solid transparent;
     border-radius: 15px;
   }
