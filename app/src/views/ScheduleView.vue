@@ -111,7 +111,7 @@ const formatDaysToRepeatedDays = (selectedDays) => {
 };
 
 const commandAddress = computed(() => {
-  return `/api/${process.env.VUE_APP_API_KEY}/groups/${currentGroupId.value}/scenes/${selectedScene.value?.id}/recall`;
+  return `/api/${process.env.VUE_APP_API_KEY}/groups/${currentGroupId.value}/scenes/${selectedScene.value}/recall`;
 });
 
 const saveModifiedSchedule = async () => {
