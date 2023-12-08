@@ -260,7 +260,7 @@ const deleteSchedule = async (scheduleId: string) => {
     <ul class="schedule-list">
       <li v-for="schedule in schedules" :key="schedule.id" class="schedule-item">
         {{ schedule.name }} - {{ schedule.localtime }}
-        <button @click="showDetails(schedule.id)" class="details-button"> Show Details (ID: {{ schedule.id }}) </button>
+        <button @click="showDetails(schedule.id)" class="details-button"> Show Details </button>
         <font-awesome-icon @click="deleteSchedule(schedule.id)" icon="trash" />
       </li>
     </ul>
@@ -295,7 +295,6 @@ const deleteSchedule = async (scheduleId: string) => {
           <!-- to choose days -->
           <div>
             <div>
-              {{ selectedDays }}
               <div class="days-row">
                 <label for="days">Select Days:</label>
                 <div class="day-checkbox" v-for="(day, index) in daysOfWeek" :key="index" @click="toggleDay(index)">
