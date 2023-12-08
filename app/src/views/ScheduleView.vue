@@ -31,6 +31,7 @@ onMounted(() => {
     currentGroupId.value = route.params.groupId;
     getSchedule();
     getScenes();
+    selectedScene.value = selectedSchedule.value?.sceneId || null;
 });
 
 const getSchedule = async () => {
@@ -291,10 +292,11 @@ const deleteSchedule = async (scheduleId: string) => {
           <div>
             <label for="scene">Select Scene:</label>
             <select v-model="selectedScene" id="scene">
-              <option v-for="(scene, index) in scenes" :key="index" :value="scene">{{ scene.name }}</option>
+              <option :value="null">No Scene Selected</option>
+              <option v-for="(scene, index) in scenes" :key="index" :value="scene.id">{{ scene.name }}</option>
             </select>
           </div>
-        
+
           <button type="submit" :disabled="isSaveDisabled">Save Changes</button>
         </form>
     </div>
