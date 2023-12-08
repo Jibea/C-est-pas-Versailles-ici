@@ -62,10 +62,20 @@ const clickedScene = async (index: number) => {
       </div>
     </button>
     <div v-if="index == indexClicked">
-      <p>cliked on {{ sceneInfos.name }} </p>
+      <p>name: {{ sceneInfos.name }} </p>
+      <li v-for="(light) in sceneInfos.lights" :key="light.id" >
+        <p>{{ light }}</p>
+      </li>
+      <!-- <label class="switch">
+        <input type="checkbox" v-model="light.state.on" @change="toggleLight(sceneInfos.lights[1])">
+        <span class="slider"></span>
+      </label> -->
     </div>
     </li>
   </ul>
+  <button class="add-scene">
+    <p class="add-scene-text">+</p>
+  </button>
 </template>
 
 <style scoped>
@@ -92,6 +102,24 @@ const clickedScene = async (index: number) => {
   font-size: 18px;
   font-weight: bold;
   margin-bottom: 5px;
+}
+
+.add-scene {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  margin-right: 2%;
+  margin-bottom: 2%;
+  display:block;
+  height: 75px;
+  width: 75px;
+  border-radius: 50%;
+  border: 1px solid #ddd;
+}
+
+.add-scene-text {
+  font-size: 200%;
+  font-weight: bold;
 }
 
 </style>
