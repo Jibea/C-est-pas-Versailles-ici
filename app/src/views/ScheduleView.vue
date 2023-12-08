@@ -234,9 +234,8 @@ const deleteSchedule = async (scheduleId: string) => {
 </script>
 
 <template>
-  <div>
-    <TopBar :title="'Schedule View'" />
-  </div>
+
+  <TopBar :title="'Schedule View'" />
 
   <div class="room-view">
 
