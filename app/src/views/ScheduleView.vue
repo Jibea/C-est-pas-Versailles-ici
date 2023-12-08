@@ -25,6 +25,7 @@ const newScheduleStatus = ref('enabled');
 const newScheduleAutodelete = ref(false);
 const now = new Date();
 const newScheduleTime = ref(`${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}T00:00:00`);
+const isModifyFormVisible = ref(false);
 
 onMounted(() => {
     const route = useRoute();
@@ -88,6 +89,7 @@ const showDetails = (scheduleId: string) => {
         } else {
             console.error(`Schedule with id ${scheduleId} not found`);
         }
+        isModifyFormVisible.value = true;
     } else {
         console.error('Undefined scheduleId');
     }
@@ -133,6 +135,13 @@ const saveModifiedSchedule = async () => {
 
     await axios.put(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/schedules/${selectedSchedule.value?.id}`, requestData);
     await getSchedule();
+
+    selectedSchedule.value = null;
+    modifiedName.value = '';
+    modifiedTime.value = '';
+    selectedDays.value = [];
+    selectedScene.value = '';
+    isModifyFormVisible.value = false;
 
     console.log('Schedule updated successfully');
   } catch (error) {
@@ -260,7 +269,7 @@ const deleteSchedule = async (scheduleId: string) => {
     </div>
 
     <!-- modify schedule form -->
-    <div class="modify-schedule-container">
+    <div v-if="isModifyFormVisible" class="modify-schedule-container">
       <h2>Modify Schedule</h2>
         <form @submit.prevent="saveModifiedSchedule">
 
