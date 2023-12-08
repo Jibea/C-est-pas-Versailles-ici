@@ -107,34 +107,26 @@ const formatDaysToRepeatedDays = (selectedDays) => {
   return `W${decimalValue}`;
 };
 
+const commandAddress = computed(() => {
+  return `/api/${process.env.VUE_APP_API_KEY}/groups/${currentGroupId.value}/scenes/${selectedScene.value?.id}/recall`;
+});
+
 const saveModifiedSchedule = async () => {
   try {
     let requestData;
 
-    if (modifiedName.value === 'call scene') {
-      requestData = {
-        name: modifiedName.value || selectedSchedule.value?.name,
-        command: {
-          address: `/api/${process.env.VUE_APP_API_KEY}/scenes/${selectedScene.value}/recall`,
-          body: {},
-          method: 'PUT',
-        },
-        status: selectedSchedule.value?.status,
-        autodelete: selectedSchedule.value?.autodelete,
-        time: formatDaysToRepeatedDays(selectedDays.value) + '/' + formatTimeToTimer(modifiedTime.value || selectedSchedule.value?.time),
-        localtime: formatDaysToRepeatedDays(selectedDays.value) + '/' + formatTimeToTimer(modifiedTime.value || selectedSchedule.value?.time),
-      };
-    } else {
-      requestData = {
-        name: modifiedName.value || selectedSchedule.value?.name,
-        description: selectedSchedule.value?.description,
-        command: selectedSchedule.value?.command,
-        status: selectedSchedule.value?.status,
-        autodelete: selectedSchedule.value?.autodelete,
-        time: formatDaysToRepeatedDays(selectedDays.value) + '/' + formatTimeToTimer(modifiedTime.value || selectedSchedule.value?.time),
-        localtime: formatDaysToRepeatedDays(selectedDays.value) + '/' + formatTimeToTimer(modifiedTime.value || selectedSchedule.value?.time),
-      };
-    }
+    requestData = {
+      name: modifiedName.value || selectedSchedule.value?.name,
+      command: {
+        address: commandAddress.value,
+        body: {},
+        method: 'PUT',
+      },
+      status: selectedSchedule.value?.status,
+      autodelete: selectedSchedule.value?.autodelete,
+      time: formatDaysToRepeatedDays(selectedDays.value) + '/' + formatTimeToTimer(modifiedTime.value || selectedSchedule.value?.time),
+      localtime: formatDaysToRepeatedDays(selectedDays.value) + '/' + formatTimeToTimer(modifiedTime.value || selectedSchedule.value?.time),
+    };
 
     console.log('Modified schedule:', requestData, "for id ", selectedSchedule.value?.id);
 
@@ -288,7 +280,7 @@ const deleteSchedule = async (scheduleId: string) => {
           <div>
             <label for="scene">Select Scene:</label>
             <select v-model="selectedScene" id="scene">
-              <option v-for="(scene, index) in scenes" :key="index" :value="scene">{{ scene }}</option>
+              <option v-for="(scene, index) in scenes" :key="index" :value="scene">{{ scene.name }}</option>
             </select>
           </div>
         
