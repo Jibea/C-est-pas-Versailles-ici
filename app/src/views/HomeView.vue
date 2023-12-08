@@ -7,6 +7,7 @@
     import draggable from 'vuedraggable'
     import axios from "axios";
     import { Group } from "@/types/Group";
+    import SwitchOnOff from "@/components/SwitchOnOff.vue";
 
 const rooms = ref([]);
 const route = useRoute();
