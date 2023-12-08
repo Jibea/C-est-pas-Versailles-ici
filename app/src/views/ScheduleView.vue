@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router';
 import axios from 'axios';
 import { Schedule } from '@/types/Schedule';
 import TopBar from '@/components/TopBar.vue';
+import { SceneInfo } from '@/types/Scene';
 
 const schedules = ref<Record<string, Schedule>>({});
 const schedulesLoaded = ref(false);
@@ -170,7 +171,10 @@ const getScenes = async () => {
     const response = await axios.get(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/groups/${currentGroupId.value}/scenes`);
     console.log('All Scenes response.data:', response.data);
 
-    scenes.value = Object.values(response.data).map((scene: any) => scene.name);
+    scenes.value = Object.entries(response.data).map(([id, scene]: [string, SceneInfo]) => {
+      scene.id = id;
+      return scene;
+    });
   } catch (error) {
     console.error(error);
   }
