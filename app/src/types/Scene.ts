@@ -2,7 +2,7 @@ export interface SceneInfo {
     lights: string[];
     name: string;
     transitiontime: number;
-    id: string; // my creation caus i need it for schedule
+    id: string; // needed for schedule
 }
 
 export interface Scene {
