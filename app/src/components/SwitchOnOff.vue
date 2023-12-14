@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="ts" name="SwitchOnOff">
 import { ref, onMounted, defineProps, watch } from 'vue';
 import axios from 'axios';
 

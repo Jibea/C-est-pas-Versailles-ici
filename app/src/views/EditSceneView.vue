@@ -5,6 +5,8 @@ import axios from 'axios';
 import TopBar from '@/components/TopBar.vue';
 import { Scene } from '@/types/Scene';
 import { SceneAttributes } from '@/types/SceneAttributes';
+import SwitchOnOff from '@/components/SwitchOnOff.vue';
+import BrightnessSlide from '@/components/BrightnessSlide.vue';
 
 const router = useRouter();
 const scenes = ref<Scene>({});
@@ -77,11 +79,9 @@ const addScene = () => {
       <p>name: {{ sceneInfos.name }} </p>
       <li v-for="(light) in sceneInfos.lights" :key="light.id" >
         <p>{{ light }}</p>
+        <SwitchOnOff :objectId=light.id type="light" />
+        <BrightnessSlide :lightId="light.id" />
       </li>
-      <!-- <label class="switch">
-        <input type="checkbox" v-model="light.state.on" @change="toggleLight(sceneInfos.lights[1])">
-        <span class="slider"></span>
-      </label> -->
     </div>
     </li>
   </ul>
