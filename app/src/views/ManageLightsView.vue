@@ -5,6 +5,7 @@ import axios from 'axios';
 import { GroupAttributes } from '@/types/GroupAttributes';
 import { LightsApiResponse } from '@/types/Light';
 import { Light } from '@/types/Light';
+import TopBar from '@/components/TopBar.vue';
 
 const router = useRouter();
 const group = ref<GroupAttributes>();
@@ -141,8 +142,11 @@ const cancelRename = () => {
 </script>
 
 <template>
+  <div>
+    <TopBar :title="'Manage Lights View'" />
+  </div>
+
   <div class="room-view">
-    <h1>Manage Lights View</h1>
 
     <div class="lights-in-group">
         <h1>Lights in the Group</h1>
