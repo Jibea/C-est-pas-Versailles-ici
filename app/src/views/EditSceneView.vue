@@ -10,6 +10,7 @@ import BrightnessSlide from '@/components/BrightnessSlide.vue';
 
 const router = useRouter();
 const scenes = ref<Scene>({});
+const addingScene = ref(false);
 const indexClicked = ref(0);
 const message = ref('');
 const sceneInfos = ref<SceneAttributes>({
@@ -37,7 +38,6 @@ const getSceneInfo = async (id: number) => {
     try {
         const response = await axios.get(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/groups/${groupId}/scenes/${id}`);
         sceneInfos.value = response.data;
-        console.log('sceneInfos data: ', sceneInfos.value);
     } catch (error) {
         console.error('Error API: ', error);
     }
@@ -50,18 +50,31 @@ const clickedScene = async (index: number) => {
   } else {
     indexClicked.value = 0
   }
-  console.log(`change index to ${indexClicked.value}`)
 }
 
-const addScene = () => {
-    axios.post(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/groups/${groupId}/scenes`, {
+const addScene = async () => {
+  try {
+    await axios.post(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/groups/${groupId}/scenes`, {
         name: message.value,
-    }).then((response) => {
-            console.log(response);
-            window.location.reload();
-        }, (error) => {
-            console.log(error);
-        });
+    });
+    await getScenes();
+    stateScene();
+  } catch (error) {
+    console.error(`Error`);
+  }
+}
+
+const deleteScene = async (sceneId: string) => {
+  try {
+    await axios.delete(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/groups/${groupId}/scenes/${sceneId}`);
+    await getScenes();
+  } catch (error) {
+    console.error(`Error`);
+  }
+}
+
+const stateScene = () => {
+  addingScene.value = !addingScene.value;
 }
 
 </script>
@@ -75,6 +88,7 @@ const addScene = () => {
         <p class="item-name">{{ scene.name }}</p>
       </div>
     </button>
+    <font-awesome-icon @click="deleteScene(index.toString())" icon="trash" />
     <div v-if="index == indexClicked">
       <p>name: {{ sceneInfos.name }} </p>
       <li v-for="(light) in sceneInfos.lights" :key="light.id" >
@@ -85,7 +99,11 @@ const addScene = () => {
     </div>
     </li>
   </ul>
-  <button class="add-scene">
+  <div v-if="addingScene == true">
+    <input v-model="message" placeholder="Scene name" />
+    <button @click="addScene" >Add</button>
+  </div>
+  <button @click="stateScene" class="add-scene">
     <p class="add-scene-text">+</p>
   </button>
 </template>
