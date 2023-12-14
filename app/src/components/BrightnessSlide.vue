@@ -5,20 +5,20 @@ import axios from 'axios';
 import { Light } from '@/types/Light';
 
 const light = ref<Light>();
-const lightId = ref('');
+const baseUrl = ref('');
 const brightness = ref(0);
 
 
 const props = defineProps({
-    lightId: {
-      type: String,
-      required: true,
+    baseUrl: {
+        type: String,
+        required: true
     },
 });
 
 const getLightState = async () => {
     try {
-        const response = await axios.get(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/lights/${props.lightId}`);
+        const response = await axios.get(baseUrl.value);
         light.value = response.data;
         if (light.value?.state.bri) {
           brightness.value = light.value.state.bri;
@@ -35,8 +35,7 @@ watch(brightness, (newValue) => {
 });
 
 onMounted(() => {
-  lightId.value = props.lightId;
-  console.log('Light ID: ', props.lightId);
+  baseUrl.value = props.baseUrl;
   getLightState();
 });
 
@@ -44,7 +43,7 @@ onMounted(() => {
 const updateLightState = async () => {
     const validBrightness = Math.min(255, Math.max(0, brightness.value));
     try {
-        const response = await axios.put(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/lights/${props.lightId}/state`, {
+        const response = await axios.put(baseUrl.value + `/state`, {
             bri: validBrightness,
         });
         console.log(response.data);

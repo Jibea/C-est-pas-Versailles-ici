@@ -96,7 +96,7 @@ const stateScene = () => {
       <li v-for="(light) in sceneInfos.lights" :key="light.id" >
         <p>{{ light }}</p>
         <SwitchOnOff type="light" :baseUrl="`http://${gatewayIP}/api/${APIKey}/groups/${groupId}/scenes/${index}/lights/${light.id}`"/>
-        <BrightnessSlide :lightId="light.id" />
+        <BrightnessSlide :baseUrl="`http://${gatewayIP}/api/${APIKey}/groups/${groupId}/scenes/${index}/lights/${light.id}`" />
       </li>
     </div>
     </li>

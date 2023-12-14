@@ -192,7 +192,7 @@ const updateLightState = async (lightId: string) => {
           <div class="light-controls">
             <SwitchOnOff type="light" :baseUrl="`http://${gatewayIP}/api/${APIKey}/lights/${light.id}`"/>
             <!-- Brightness Slider -->
-            <BrightnessSlide :lightId="light.id" />
+            <BrightnessSlide :baseUrl="`http://${gatewayIP}/api/${APIKey}/lights/${light.id}`" />
 
             <!-- Temperature Slider -->
             <div class="slider-container">
