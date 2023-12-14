@@ -10,6 +10,8 @@ import SwitchOnOff from '@/components/SwitchOnOff.vue';
 const roomName = ref('');
 const groups = ref<GroupsResponse>({});
 const groupName = ref('');
+const gatewayIP = process.env.VUE_APP_GATEWAY_IP
+const APIKey = process.env.VUE_APP_API_KEY;
 
 onMounted(() => {
     const route = useRoute();
@@ -32,7 +34,7 @@ const fixMessageSyntax = () => {
 
 const getGroups = async () => {
     try {
-        const response = await axios.get(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/groups`);
+        const response = await axios.get(`http://${gatewayIP}/api/${APIKey}/groups`);
         groups.value = response.data;
         console.log('Groups data: ', groups.value);
         updateGroupStates();
@@ -43,7 +45,7 @@ const getGroups = async () => {
 
 const removeGroup = async (groupId: string) => {
     try {
-        const response = await axios.delete(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/groups/${groupId}`);
+        const response = await axios.delete(`http://${gatewayIP}/api/${APIKey}/groups/${groupId}`);
         console.log('Response: ', response);
         getGroups();
     } catch (error) {
@@ -54,7 +56,7 @@ const removeGroup = async (groupId: string) => {
 const addGroup = async () => {
   try {
     groupName.value = roomName.value + "-" + groupName.value
-    const response = await axios.post(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/groups`, {
+    const response = await axios.post(`http://${gatewayIP}/api/${APIKey}/groups`, {
       name: groupName.value,
     });
     console.log('Response: ', response);
@@ -77,7 +79,7 @@ const filteredGroups = computed(() => {
 const updateGroupStates = async () => {
     for (const [groupId, group] of Object.entries(groups.value)) {
         try {
-            const response = await axios.get(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/groups/${groupId}`);
+            const response = await axios.get(`http://${gatewayIP}/api/${APIKey}/groups/${groupId}`);
             console.log('Response dallumage:', response.data.action.on);
             groups.value[groupId].isOn = response.data.action.on;
         } catch (error) {
@@ -109,7 +111,7 @@ const updateGroupStates = async () => {
 
         <div class="group-controls">
           <button @click="removeGroup(groupId)" class="remove-button">Remove</button>
-          <SwitchOnOff :objectId=groupId type="group" />
+          <SwitchOnOff type="group" :baseUrl="`http://${gatewayIP}/api/${APIKey}/groups/${groupId}`"/>
 
           <!-- <label class="switch">
             <input type="checkbox" @change="toggleGroup(groupId)" :checked="group.isOn" :disabled="groupIdToggle === groupId">

@@ -19,6 +19,8 @@ const sceneInfos = ref<SceneAttributes>({
   state: 0,
 });
 const groupId = decodeURIComponent(router.currentRoute.value.params.groupId);
+const gatewayIP = process.env.VUE_APP_GATEWAY_IP
+const APIKey = process.env.VUE_APP_API_KEY;
 
 onMounted(() => {
     getScenes()
@@ -26,7 +28,7 @@ onMounted(() => {
 
 const getScenes = async () => {
     try {
-        const response = await axios.get(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/groups/${groupId}/scenes`);
+        const response = await axios.get(`http://${gatewayIP}/api/${APIKey}/groups/${groupId}/scenes`);
         scenes.value = response.data;
         // console.log('scenes data: ', scenes.value[1].transitiontime);
     } catch (error) {
@@ -36,7 +38,7 @@ const getScenes = async () => {
 
 const getSceneInfo = async (id: number) => {
     try {
-        const response = await axios.get(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/groups/${groupId}/scenes/${id}`);
+        const response = await axios.get(`http://${gatewayIP}/api/${APIKey}/groups/${groupId}/scenes/${id}`);
         sceneInfos.value = response.data;
     } catch (error) {
         console.error('Error API: ', error);
@@ -54,7 +56,7 @@ const clickedScene = async (index: number) => {
 
 const addScene = async () => {
   try {
-    await axios.post(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/groups/${groupId}/scenes`, {
+    await axios.post(`http://${gatewayIP}/api/${APIKey}/groups/${groupId}/scenes`, {
         name: message.value,
     });
     await getScenes();
@@ -66,7 +68,7 @@ const addScene = async () => {
 
 const deleteScene = async (sceneId: string) => {
   try {
-    await axios.delete(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/groups/${groupId}/scenes/${sceneId}`);
+    await axios.delete(`http://${gatewayIP}/api/${APIKey}/groups/${groupId}/scenes/${sceneId}`);
     await getScenes();
   } catch (error) {
     console.error(`Error`);
@@ -93,7 +95,7 @@ const stateScene = () => {
       <p>name: {{ sceneInfos.name }} </p>
       <li v-for="(light) in sceneInfos.lights" :key="light.id" >
         <p>{{ light }}</p>
-        <SwitchOnOff :objectId=light.id type="light" />
+        <SwitchOnOff type="light" :baseUrl="`http://${gatewayIP}/api/${APIKey}/groups/${groupId}/scenes/${index}/lights/${light.id}`"/>
         <BrightnessSlide :lightId="light.id" />
       </li>
     </div>
