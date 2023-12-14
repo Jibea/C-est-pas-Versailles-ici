@@ -5,6 +5,7 @@ import { GroupAttributes } from '@/types/GroupAttributes';
 import axios from 'axios';
 import { Light } from '@/types/Light';
 import TopBar from '@/components/TopBar.vue';
+import SwitchOnOff from '@/components/SwitchOnOff.vue';
 
 const router = useRouter();
 const groupId = decodeURIComponent(router.currentRoute.value.params.groupId);
@@ -99,20 +100,6 @@ const renameGroup = async () => {
   }
 }
 
-const toggleLight = async (light: Light) => {
-  try {
-    const payload = { on: light.state.on };
-
-    const response = await axios.put(
-      `http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/lights/${light.id}/state`,
-      payload
-    );
-    console.log('Light state updated:', response.data);
-  } catch (error) {
-    console.error('Error updating light state: ', error);
-  }
-};
-
 const searchLights = async () => {
     try {
         isSearching.value = true;
@@ -203,11 +190,7 @@ const updateLightState = async (lightId: string) => {
 
           <div class="light-controls">
 
-            <!-- toggle switch pour eteindre/allumer les lampes -->
-            <label class="switch">
-              <input type="checkbox" v-model="light.state.on" @change="toggleLight(light)">
-              <span class="slider"></span>
-            </label>
+            <SwitchOnOff :objectId=light.id type="light" />
 
             <!-- Brightness Slider -->
             <div class="slider-container">
@@ -240,7 +223,7 @@ const updateLightState = async (lightId: string) => {
       <router-link :to="{ name: 'scheduleRoute', params: { groupId: group?.id } }">
         <button>Schedule</button>
       </router-link>
-      
+
       <router-link :to="{ name: 'sensorsControlRoute', params: { groupId: group?.id } }">
         <button>Sensor Control</button>
       </router-link>
@@ -367,19 +350,6 @@ ul.light-list {
   z-index: 1000;
 }
 
-.switch {
-  margin-top: 10px;
-  position: relative;
-  display: inline-block;
-  width: 60px;
-  height: 34px;
-}
-
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
 
 .slider {
   position: absolute;
