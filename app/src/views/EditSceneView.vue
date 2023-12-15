@@ -38,6 +38,19 @@ const openRenameDialog = (index: number) => {
   console.log(index + " and " + indexClickedRename.value);
 }
 
+const checkNameScene = (newname: string) => {
+  const scenesName = Object.values(scenes.value).map(obj => {
+    const { name } = obj;
+    return { name };
+  });
+  for (let i = 0; i < scenesName.length; i++) {
+    if (scenesName[i].name == newname) {
+      return false;
+    }
+  }
+  return true;
+}
+
 const getScenes = async () => {
     try {
         const response = await axios.get(`http://${gatewayIP}/api/${APIKey}/groups/${groupId}/scenes`);
@@ -123,7 +136,8 @@ const stateScene = () => {
       <font-awesome-icon @click="deleteScene(index.toString())" icon="trash" />
       <div v-if="renameDialogOpen" class="scene-input-rename-div">
         <input v-model="renameScene" placeholder="Scene name" maxlength="16" />
-        <button @click="editNameScene" >Rename</button>
+        <button v-if="checkNameScene(renameScene)" @click="editNameScene" >Rename</button>
+        <p v-else>Name already used</p>
       </div>
       <div v-if="index == indexClicked">
         <p>name: {{ sceneInfos.name }} </p>
@@ -137,7 +151,8 @@ const stateScene = () => {
   </ul>
   <div v-if="addingScene == true" class="scene-input-div">
     <input v-model="message" placeholder="Scene name" maxlength="16" />
-    <button @click="addScene" >Add</button>
+    <button v-if="checkNameScene(message)" @click="addScene" >Add</button>
+    <p v-else>Name already used</p>
   </div>
   <button @click="stateScene" class="add-scene">
     <p class="add-scene-text">+</p>
