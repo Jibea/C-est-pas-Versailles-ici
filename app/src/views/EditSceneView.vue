@@ -13,11 +13,14 @@ const scenes = ref<Scene>({});
 const addingScene = ref(false);
 const indexClicked = ref(0);
 const message = ref('');
+const renameScene = ref('');
+const indexClickedRename = ref(0);
 const sceneInfos = ref<SceneAttributes>({
   lights: [],
   name: "",
   state: 0,
 });
+const renameDialogOpen = ref(false);
 const groupId = decodeURIComponent(router.currentRoute.value.params.groupId);
 const gatewayIP = process.env.VUE_APP_GATEWAY_IP
 const APIKey = process.env.VUE_APP_API_KEY;
@@ -26,11 +29,19 @@ onMounted(() => {
     getScenes()
 });
 
+const openRenameDialog = (index: number) => {
+  renameDialogOpen.value = !renameDialogOpen.value;
+  if (renameDialogOpen.value)
+    indexClickedRename.value = index;
+  else
+    indexClickedRename.value = 0;
+  console.log(index + " and " + indexClickedRename.value);
+}
+
 const getScenes = async () => {
     try {
         const response = await axios.get(`http://${gatewayIP}/api/${APIKey}/groups/${groupId}/scenes`);
         scenes.value = response.data;
-        // console.log('scenes data: ', scenes.value[1].transitiontime);
     } catch (error) {
         console.error('Error API: ', error);
     }
@@ -64,6 +75,20 @@ const addScene = async () => {
   } catch (error) {
     console.error(`Error`);
   }
+  message.value = '';
+}
+
+const editNameScene = async () => {
+  try {
+    await axios.put(`http://${gatewayIP}/api/${APIKey}/groups/${groupId}/scenes/${indexClickedRename.value.toString()}`, {
+        name: renameScene.value,
+    });
+    await getScenes();
+    openRenameDialog(indexClickedRename.value);
+  } catch (error) {
+    console.error(`Error`);
+  }
+  renameScene.value = '';
 }
 
 const deleteScene = async (sceneId: string) => {
@@ -86,23 +111,32 @@ const stateScene = () => {
   <ul class="scene-list">
     <li v-for="(scene, index) in scenes" :key="scene.name" >
       <button @click="clickedScene(index)" class="scene-button">
-      <div class="scene-info">
-        <p class="item-name">{{ scene.name }}</p>
+        <div class="scene-info">
+          <p class="item-name">{{ scene.name }}</p>
+        </div>
+      </button>
+      <font-awesome-icon
+        :icon="['fas', 'pen']"
+        style="color: #706d74; cursor: pointer; margin-left: 10px;"
+        @click="openRenameDialog(index)"
+      />
+      <font-awesome-icon @click="deleteScene(index.toString())" icon="trash" />
+      <div v-if="renameDialogOpen" class="scene-input-rename-div">
+        <input v-model="renameScene" placeholder="Scene name" maxlength="16" />
+        <button @click="editNameScene" >Rename</button>
       </div>
-    </button>
-    <font-awesome-icon @click="deleteScene(index.toString())" icon="trash" />
-    <div v-if="index == indexClicked">
-      <p>name: {{ sceneInfos.name }} </p>
-      <li v-for="(light) in sceneInfos.lights" :key="light.id" >
-        <p>{{ light }}</p>
-        <SwitchOnOff type="light" :baseUrl="`http://${gatewayIP}/api/${APIKey}/groups/${groupId}/scenes/${index}/lights/${light.id}`"/>
-        <BrightnessSlide :baseUrl="`http://${gatewayIP}/api/${APIKey}/groups/${groupId}/scenes/${index}/lights/${light.id}`" />
-      </li>
-    </div>
+      <div v-if="index == indexClicked">
+        <p>name: {{ sceneInfos.name }} </p>
+        <li v-for="(light) in sceneInfos.lights" :key="light.id" >
+          <p>{{ light }}</p>
+          <SwitchOnOff type="light" :baseUrl="`http://${gatewayIP}/api/${APIKey}/groups/${groupId}/scenes/${index}/lights/${light.id}`"/>
+          <BrightnessSlide :baseUrl="`http://${gatewayIP}/api/${APIKey}/groups/${groupId}/scenes/${index}/lights/${light.id}`" />
+        </li>
+      </div>
     </li>
   </ul>
-  <div v-if="addingScene == true">
-    <input v-model="message" placeholder="Scene name" />
+  <div v-if="addingScene == true" class="scene-input-div">
+    <input v-model="message" placeholder="Scene name" maxlength="16" />
     <button @click="addScene" >Add</button>
   </div>
   <button @click="stateScene" class="add-scene">
@@ -152,6 +186,22 @@ const stateScene = () => {
 .add-scene-text {
   font-size: 200%;
   font-weight: bold;
+}
+
+.scene-input-div {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  margin-right: 2%;
+  margin-bottom: 10%;
+}
+
+.scene-input-rename-div {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  margin-right: 2%;
+  margin-bottom: 12%;
 }
 
 </style>
