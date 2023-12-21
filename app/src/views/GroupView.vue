@@ -19,6 +19,8 @@ const renameDialogOpen = ref(false);
 const newGroupName = ref('');
 const isSearching = ref(false);
 const timer = ref(0);
+const gatewayIP = process.env.VUE_APP_GATEWAY_IP
+const APIKey = process.env.VUE_APP_API_KEY;
 
 onMounted(() => {
     getGroup();
@@ -188,9 +190,9 @@ const updateLightState = async (lightId: string) => {
           </div>
 
           <div class="light-controls">
-            <SwitchOnOff :objectId=light.id type="light" />
+            <SwitchOnOff type="light" :baseUrl="`http://${gatewayIP}/api/${APIKey}/lights/${light.id}`"/>
             <!-- Brightness Slider -->
-            <BrightnessSlide :lightId="light.id" />
+            <BrightnessSlide :baseUrl="`http://${gatewayIP}/api/${APIKey}/lights/${light.id}`" />
 
             <!-- Temperature Slider -->
             <div class="slider-container">
