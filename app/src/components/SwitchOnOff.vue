@@ -1,23 +1,22 @@
-<script setup lang="ts">
+<script setup lang="ts" name="SwitchOnOff">
 import { ref, onMounted, defineProps, watch } from 'vue';
 import axios from 'axios';
 
 const isSwitchOnOff = ref(false);
 const isLightOn = ref(false);
-const groupId = ref('');
-const lightId = ref('');
 const type = ref('');
 const groupState = ref(false);
+const baseUrl = ref('');
 
 const props = defineProps({
-    objectId: {
-        type: String,
-        required: true
-    },
     type: {
         type: String,
         required: true
-    }
+    },
+    baseUrl: {
+        type: String,
+        required: true
+    },
 });
 
 watch(isSwitchOnOff, (newState) => {
@@ -37,7 +36,7 @@ watch(groupState, (newState) => {
 
 
 const getGroup = () => {
-    axios.get(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/groups/${groupId.value}`)
+    axios.get(baseUrl.value)
         .then(response => {
             groupState.value = response.data.state.any_on;
             isSwitchOnOff.value = response.data.state.any_on;
@@ -48,24 +47,23 @@ const getGroup = () => {
 }
 
 const getLight = () => {
-    axios.get(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/lights/${lightId.value}`)
+    axios.get(baseUrl.value)
         .then(response => {
             console.log('[switch on off]state on/off:', response.data.state.on);
             isLightOn.value = response.data.state.on;
             isSwitchOnOff.value = response.data.state.on;
         })
         .catch(error => {
-            console.error('Error updating group state:', error);
+            console.error('Error updating light state:', error);
         });
 }
 
 onMounted(() => {
     type.value = props.type;
+    baseUrl.value = props.baseUrl;
     if (type.value == 'group') {
-        groupId.value = props.objectId;
         getGroup();
     } else if (type.value == 'light') {
-        lightId.value = props.objectId;
         getLight();
     }
 
@@ -75,7 +73,7 @@ const SwitchOnOffFunction = () => {
     let body = { on: isSwitchOnOff.value };
 
     if (type.value == 'group') {
-        axios.put(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/groups/${groupId.value}/action`, body)
+        axios.put(baseUrl.value + `/action`, body)
         .then(response => {
             console.log('Response:', response);
         })
@@ -84,7 +82,7 @@ const SwitchOnOffFunction = () => {
         });
     }
     if (type.value == 'light') {
-        axios.put(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/lights/${lightId.value}/state`, body)
+        axios.put(baseUrl.value + `/state`, body)
         .then(response => {
             console.log('Response:', response);
         })
