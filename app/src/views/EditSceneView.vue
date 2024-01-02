@@ -7,6 +7,7 @@ import { Scene } from '@/types/Scene';
 import { SceneAttributes } from '@/types/SceneAttributes';
 import SwitchOnOff from '@/components/SwitchOnOff.vue';
 import BrightnessSlide from '@/components/BrightnessSlide.vue';
+import ColorTemperatureSlide from '@/components/ColorTemperatureSlide.vue';
 
 const router = useRouter();
 const scenes = ref<Scene>({});
@@ -35,7 +36,6 @@ const openRenameDialog = (index: number) => {
     indexClickedRename.value = index;
   else
     indexClickedRename.value = 0;
-  console.log(index + " and " + indexClickedRename.value);
 }
 
 const checkNameScene = (newname: string) => {
@@ -145,7 +145,8 @@ const stateScene = () => {
           <p>{{ light }}</p>
           <SwitchOnOff type="light" :baseUrl="`http://${gatewayIP}/api/${APIKey}/groups/${groupId}/scenes/${index}/lights/${light.id}`"/>
           <BrightnessSlide :baseUrl="`http://${gatewayIP}/api/${APIKey}/groups/${groupId}/scenes/${index}/lights/${light.id}`" />
-        </li>
+          <ColorTemperatureSlide :baseUrl="`http://${gatewayIP}/api/${APIKey}/groups/${groupId}/scenes/${index}/lights/${light.id}`" />
+        </li> 
       </div>
     </li>
   </ul>
