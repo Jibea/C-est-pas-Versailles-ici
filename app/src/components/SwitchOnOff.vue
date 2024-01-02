@@ -20,17 +20,14 @@ const props = defineProps({
 });
 
 watch(isSwitchOnOff, (newState) => {
-    console.log('isSwitchOnOff:', newState);
     isSwitchOnOff.value = newState;
 });
 
 watch(isLightOn, (newState) => {
-    console.log('isLightOn:', newState);
     isLightOn.value = newState;
 });
 
 watch(groupState, (newState) => {
-    console.log('groupState:', newState);
     groupState.value = newState;
 });
 
@@ -49,7 +46,6 @@ const getGroup = () => {
 const getLight = () => {
     axios.get(baseUrl.value)
         .then(response => {
-            console.log('[switch on off]state on/off:', response.data.state.on);
             isLightOn.value = response.data.state.on;
             isSwitchOnOff.value = response.data.state.on;
         })
@@ -74,18 +70,12 @@ const SwitchOnOffFunction = () => {
 
     if (type.value == 'group') {
         axios.put(baseUrl.value + `/action`, body)
-        .then(response => {
-            console.log('Response:', response);
-        })
         .catch(error => {
             console.error('Error API:', error);
         });
     }
     if (type.value == 'light') {
         axios.put(baseUrl.value + `/state`, body)
-        .then(response => {
-            console.log('Response:', response);
-        })
         .catch(error => {
             console.error('Error API:', error);
         });

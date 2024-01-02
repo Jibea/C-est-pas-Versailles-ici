@@ -23,14 +23,12 @@ const getLightState = async () => {
         if (light.value?.state.bri) {
           brightness.value = light.value.state.bri;
         }
-        console.log('brightness data: ', brightness.value);
     } catch (error) {
         console.error('Error API: ', error);
     }
 }
 
 watch(brightness, (newValue) => {
-    console.log('Brightness changed: ', newValue);
     brightness.value = newValue;
 });
 
@@ -43,10 +41,9 @@ onMounted(() => {
 const updateLightState = async () => {
     const validBrightness = Math.min(255, Math.max(0, brightness.value));
     try {
-        const response = await axios.put(baseUrl.value + `/state`, {
+        await axios.put(baseUrl.value + `/state`, {
             bri: validBrightness,
         });
-        console.log(response.data);
     } catch (error) {
         console.error('Error API: ', error);
     }

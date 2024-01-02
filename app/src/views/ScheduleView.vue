@@ -38,7 +38,6 @@ onMounted(() => {
 const getSchedule = async () => {
   try {
     const response = await axios.get(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/schedules`);
-    console.log('All Schedules response.data:', response.data);
     const filteredSchedules: Schedule[] = [];
 
     Object.entries(response.data).forEach(([key, schedule]: [string, unknown]) => {
@@ -48,8 +47,6 @@ const getSchedule = async () => {
         filteredSchedules.push(typeSchedule);
       }
     });
-
-    console.log('Filtered Schedules:', filteredSchedules);
 
     schedules.value = filteredSchedules;
     schedulesLoaded.value = true;
@@ -61,8 +58,6 @@ const getSchedule = async () => {
 const showDetails = (scheduleId: string) => {
     if (scheduleId !== undefined) {
         const schedule = Object.values(schedules.value).find((s) => s.id === scheduleId);
-
-        console.log('Schedule object:', schedule);
 
         if (schedule) {
             selectedSchedule.value = schedule;
@@ -101,7 +96,7 @@ const formatTimeToTimer = (time) => {
 };
 
 const formatDaysToRepeatedDays = (selectedDays) => {
-  const repeatedDays = selectedDays.map((day, index) => {
+  const repeatedDays = selectedDays.map((day, _) => {
     const bit = day ? 1 : 0;
     return bit;
   }).join('');
@@ -131,8 +126,6 @@ const saveModifiedSchedule = async () => {
       localtime: formatDaysToRepeatedDays(selectedDays.value) + '/' + formatTimeToTimer(modifiedTime.value || selectedSchedule.value?.time),
     };
 
-    console.log('Modified schedule:', requestData, "for id ", selectedSchedule.value?.id);
-
     await axios.put(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/schedules/${selectedSchedule.value?.id}`, requestData);
     await getSchedule();
 
@@ -142,8 +135,6 @@ const saveModifiedSchedule = async () => {
     selectedDays.value = [];
     selectedScene.value = '';
     isModifyFormVisible.value = false;
-
-    console.log('Schedule updated successfully');
   } catch (error) {
     console.error('Error updating schedule:', error);
   }
@@ -162,7 +153,6 @@ const toggleActivation = async () => {
         const newStatus = selectedSchedule.value?.status === 'enabled' ? 'disabled' : 'enabled';
         await axios.put(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/schedules/${selectedSchedule.value?.id}`, { status: newStatus });
         selectedSchedule.value!.status = newStatus;
-        console.log(`Schedule ${selectedSchedule.value?.id} ${newStatus === 'enabled' ? 'activated' : 'deactivated'} successfully`);
     } catch (error) {
         console.error('Error toggling schedule activation:', error);
     }
@@ -171,7 +161,6 @@ const toggleActivation = async () => {
 const getScenes = async () => {
   try {
     const response = await axios.get(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/groups/${currentGroupId.value}/scenes`);
-    console.log('All Scenes response.data:', response.data);
 
     scenes.value = Object.entries(response.data).map(([id, scene]: [string, SceneInfo]) => {
       scene.id = id;
@@ -215,7 +204,6 @@ const addSchedule = async () => {
     await getSchedule();
     isAddFormVisible.value = false;
     newScheduleName.value = '';
-    console.log('Schedule added successfully');
   } catch (error) {
     console.error('Error adding schedule:', error);
   }
@@ -225,7 +213,6 @@ const deleteSchedule = async (scheduleId: string) => {
   try {
     await axios.delete(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/schedules/${scheduleId}`);
     await getSchedule();
-    console.log(`Schedule ${scheduleId} deleted successfully`);
   } catch (error) {
     console.error(`Error deleting schedule ${scheduleId}:`, error);
   }

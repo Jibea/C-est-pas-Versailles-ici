@@ -15,14 +15,6 @@
     //TODO value to get from the api
     let timeOn = ref(0);
 
-    const print = () => {
-        console.log(timeOn.value);
-    }
-
-    onMounted(() => {
-        console.log('Component is mounted');
-    });
-
 </script>
 
 <template>

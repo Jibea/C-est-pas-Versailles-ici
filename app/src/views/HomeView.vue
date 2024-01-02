@@ -26,9 +26,7 @@ const getGroups = async () => {
             return { name, groupId };
         });
         groupsMap.value = groupsMap.value.filter(group => !group.name.includes('-'));
-        console.log('Groups map: ', groupsMap.value);
         groups.value = response.data;
-        console.log('Groups data: ', groups.value);
         return 0
     } catch (error) {
         console.error('Error API: ', error);
@@ -40,7 +38,7 @@ const getGroups = async () => {
 const setupAdmin = async (savedList: any) => {
     const api = await getGroups();
     if (api == 0) {
-        savedList.value =  groups.value;
+        savedList.value = groups.value;
         const result = ref(Object.values(savedList.value).map(obj => {
             const { name, state: { all_on } } = obj;
             return { name, all_on };
@@ -89,12 +87,13 @@ const fixMessageSyntax = () => {
 const addRoomAdmin = () => {
     axios.post(`http://${gatewayIP}/api/${APIKey}/groups`, {
         name: message.value,
-    }).then((response) => {
-            console.log(response);
-            window.location.reload();
-        }, (error) => {
-            console.log(error);
-        });
+    })
+    .then(_ => {
+        window.location.reload();
+    })
+    .catch(error => {
+        console.error('Error adding room:', error);
+    });
 }
 
 const changeMod = () => {
@@ -116,16 +115,15 @@ const onDragStart = (event) => {
 }
 
 const onClickRemoveAdmin = (value) => {
-    console.log(value)
     const index = groupsMap.value.findIndex(room => room.name === value)
     const groupId = groupsMap.value[index].groupId
     axios.delete(`http://${gatewayIP}/api/${APIKey}/groups/${groupId}`)
-        .then((response) => {
-            console.log(response);
-            window.location.reload();
-        }, (error) => {
-            console.log(error);
-        });
+    .then(_ => {
+        window.location.reload();
+    })
+    .catch(error => {
+        console.error(error);
+    });
 }
 
 </script>

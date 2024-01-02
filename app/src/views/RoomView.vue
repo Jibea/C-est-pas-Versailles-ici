@@ -36,7 +36,6 @@ const getGroups = async () => {
     try {
         const response = await axios.get(`http://${gatewayIP}/api/${APIKey}/groups`);
         groups.value = response.data;
-        console.log('Groups data: ', groups.value);
         updateGroupStates();
     } catch (error) {
         console.error('Error API: ', error);
@@ -45,8 +44,7 @@ const getGroups = async () => {
 
 const removeGroup = async (groupId: string) => {
     try {
-        const response = await axios.delete(`http://${gatewayIP}/api/${APIKey}/groups/${groupId}`);
-        console.log('Response: ', response);
+        await axios.delete(`http://${gatewayIP}/api/${APIKey}/groups/${groupId}`);
         getGroups();
     } catch (error) {
         console.error('Error API: ', error);
@@ -56,10 +54,9 @@ const removeGroup = async (groupId: string) => {
 const addGroup = async () => {
   try {
     groupName.value = roomName.value + "-" + groupName.value
-    const response = await axios.post(`http://${gatewayIP}/api/${APIKey}/groups`, {
+    await axios.post(`http://${gatewayIP}/api/${APIKey}/groups`, {
       name: groupName.value,
     });
-    console.log('Response: ', response);
     getGroups();
     groupName.value = '';
   } catch (error) {
@@ -70,23 +67,21 @@ const addGroup = async () => {
 const filteredGroups = computed(() => {
   const normalizedRoomName = roomName.value.toLowerCase();
 
-  return Object.entries(groups.value).filter(([groupId, group]: [string, Group]) => {
+  return Object.entries(groups.value).filter(([_, group]: [string, Group]) => {
     const normalizedGroupName = group.name.toLowerCase();
     return normalizedGroupName.startsWith(`${normalizedRoomName}-`);
   });
 });
 
 const updateGroupStates = async () => {
-    for (const [groupId, group] of Object.entries(groups.value)) {
+    for (const [groupId, _] of Object.entries(groups.value)) {
         try {
             const response = await axios.get(`http://${gatewayIP}/api/${APIKey}/groups/${groupId}`);
-            console.log('Response dallumage:', response.data.action.on);
             groups.value[groupId].isOn = response.data.action.on;
         } catch (error) {
             console.error('Error updating group state:', error);
         }
     }
-    console.log('Updated groups:', groups.value);
 };
 
 </script>
