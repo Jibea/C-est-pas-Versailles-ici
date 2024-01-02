@@ -88,6 +88,7 @@ const addRoomAdmin = () => {
     axios.post(`http://${gatewayIP}/api/${APIKey}/groups`, {
         name: message.value,
     })
+    // eslint-disable-next-line
     .then(_ => {
         window.location.reload();
     })
@@ -118,6 +119,7 @@ const onClickRemoveAdmin = (value) => {
     const index = groupsMap.value.findIndex(room => room.name === value)
     const groupId = groupsMap.value[index].groupId
     axios.delete(`http://${gatewayIP}/api/${APIKey}/groups/${groupId}`)
+    // eslint-disable-next-line
     .then(_ => {
         window.location.reload();
     })

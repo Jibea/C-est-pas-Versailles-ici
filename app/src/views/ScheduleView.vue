@@ -96,10 +96,11 @@ const formatTimeToTimer = (time) => {
 };
 
 const formatDaysToRepeatedDays = (selectedDays) => {
+  // eslint-disable-next-line
   const repeatedDays = selectedDays.map((day, _) => {
-    const bit = day ? 1 : 0;
-    return bit;
-  }).join('');
+  const bit = day ? 1 : 0;
+  return bit;
+}).join('');
   const decimalValue = parseInt(repeatedDays, 2);
 
   return `W${decimalValue}`;

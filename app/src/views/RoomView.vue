@@ -67,6 +67,7 @@ const addGroup = async () => {
 const filteredGroups = computed(() => {
   const normalizedRoomName = roomName.value.toLowerCase();
 
+  // eslint-disable-next-line
   return Object.entries(groups.value).filter(([_, group]: [string, Group]) => {
     const normalizedGroupName = group.name.toLowerCase();
     return normalizedGroupName.startsWith(`${normalizedRoomName}-`);
@@ -74,6 +75,7 @@ const filteredGroups = computed(() => {
 });
 
 const updateGroupStates = async () => {
+    // eslint-disable-next-line
     for (const [groupId, _] of Object.entries(groups.value)) {
         try {
             const response = await axios.get(`http://${gatewayIP}/api/${APIKey}/groups/${groupId}`);
