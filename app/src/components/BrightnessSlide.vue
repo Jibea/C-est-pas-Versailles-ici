@@ -14,9 +14,16 @@ const props = defineProps({
         type: String,
         required: true
     },
+    bri: {
+        type: Number,
+        required: false,
+    },
 });
 
 const getLightState = async () => {
+  if (props.bri) {
+    brightness.value = props.bri;
+  } else {
     try {
         const response = await axios.get(baseUrl.value);
         light.value = response.data;
@@ -24,8 +31,9 @@ const getLightState = async () => {
           brightness.value = light.value.state.bri;
         }
     } catch (error) {
-        console.error('Error API: ', error);
+        console.error('Error get light state brightness: ', error);
     }
+  }
 }
 
 watch(brightness, (newValue) => {
@@ -45,7 +53,7 @@ const updateLightState = async () => {
             bri: validBrightness,
         });
     } catch (error) {
-        console.error('Error API: ', error);
+        console.error('Error update brightness: ', error);
     }
 }
 

@@ -15,9 +15,16 @@ const props = defineProps({
       type: String,
       required: true,
     },
+    ct: {
+      type: Number,
+      required: false,
+    },
 });
 
 const getLightState = async () => {
+  if (props.ct) {
+    ColorTemp.value = props.ct;
+  } else {
     try {
         const response = await axios.get(baseUrl.value);
         light.value = response.data;
@@ -27,8 +34,9 @@ const getLightState = async () => {
           lightHasCt.value = false;
         }
     } catch (error) {
-        console.error('Error API: ', error);
+        console.error('Error get light state: ', error);
     }
+  }
 }
 
 watch(ColorTemp, (newValue) => {
@@ -49,7 +57,7 @@ const updateLightState = async () => {
             ct: validTemperature,
         });
     } catch (error) {
-        console.error('Error API: ', error);
+        console.error('Error update temperature: ', error);
     }
 }
 </script>
