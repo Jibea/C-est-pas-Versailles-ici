@@ -140,7 +140,7 @@ const stateScene = () => {
         <p v-else>Name already used</p>
       </div>
       <div v-if="index == indexClicked" >
-        <li v-for="(light) in sceneInfos.lights" :key="light.id" class="scene-list">
+        <li v-for="(light) in sceneInfos.lights" :key="light.id" class="scene-list-light">
           <div class="sceneLightInfo">
             <p>light {{ light.id }}:</p>
             <SwitchOnOff type="light" :baseUrl="`http://${gatewayIP}/api/${APIKey}/groups/${groupId}/scenes/${index}/lights/${light.id}`" :state="light.on"/>
@@ -222,10 +222,11 @@ const stateScene = () => {
   margin-bottom: 12%;
 }
 
-.scene-list {
+.scene-list-light {
   justify-content: center;
   align-items: center;
   display: flex;
+  flex-direction: column;
 }
 
 .sceneLightInfo {
