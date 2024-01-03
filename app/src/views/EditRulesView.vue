@@ -46,7 +46,14 @@ onMounted(() => {
   getAllSensors();
   getAllGroups();
   checkFields();
+  getAllRules();
+
 });
+
+const getAllRules = async () => {
+  const response = await axios.get(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/rules`);
+  console.log(response);
+};
 
 const checkFields = () => {
   if (sensorSelected.value != '' && conditionSelected.value != '' && actionSelected.value != '' && groupSelected.value != '' && ruleName.value != '') {
@@ -88,6 +95,7 @@ const getAllGroups = async () => {
 
 const sendRule = async () => {
   const response = await axios.post(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/rules`, rule.value);
+  console.log("rules s value" + rule.value);
   console.log(response);
 };
 
@@ -99,8 +107,6 @@ const createRule = () => {
     console.log(rule.value);
     sendRule();
 
-  // const response = await axios.post(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/rules`, rule);
-  // console.log(response);
 };
 
 
@@ -157,6 +163,9 @@ const createRule = () => {
       </section>
       <h3 v-if="fieldsFilled == false" style="color: red;">  *all fields must be filled</h3>
     </form>
+  </div>
+  <div>
+    <p> {{ rule }} </p>
   </div>
 </template>
 
