@@ -5,42 +5,47 @@ import axios from 'axios';
 import { Light } from '@/types/Light';
 
 const light = ref<Light>();
-const lightId = ref('');
+const baseUrl = ref('');
 const ColorTemp = ref(0);
 const lightHasCt = ref(true);
 
 
 const props = defineProps({
-    lightId: {
+    baseUrl: {
       type: String,
       required: true,
+    },
+    ct: {
+      type: Number,
+      required: false,
     },
 });
 
 const getLightState = async () => {
+  if (props.ct) {
+    ColorTemp.value = props.ct;
+  } else {
     try {
-        const response = await axios.get(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/lights/${props.lightId}`);
+        const response = await axios.get(baseUrl.value);
         light.value = response.data;
         if (light.value?.state.ct) {
           ColorTemp.value = light.value.state.ct;
         } else {
           lightHasCt.value = false;
         }
-        console.log('ColorTemp data: ', ColorTemp.value);
     } catch (error) {
-        console.error('Error API: ', error);
+        console.error('Error get light state: ', error);
     }
+  }
 }
 
 watch(ColorTemp, (newValue) => {
-    console.log('ColorTemp changed: ', newValue);
     ColorTemp.value = newValue;
 });
 
-onMounted(() => {
-  lightId.value = props.lightId;
-  console.log('Light ID: ', props.lightId);
-  getLightState();
+onMounted(async () => {
+  baseUrl.value = props.baseUrl;
+  await getLightState();
 });
 
 
@@ -48,12 +53,11 @@ const updateLightState = async () => {
     const validTemperature = Math.min(light.value?.ctmax, Math.max(light.value?.ctmin, ColorTemp.value));
 
     try {
-        const response = await axios.put(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/lights/${props.lightId}/state`, {
+        await axios.put(baseUrl.value + `/state`, {
             ct: validTemperature,
         });
-        console.log(response.data);
     } catch (error) {
-        console.error('Error API: ', error);
+        console.error('Error update temperature: ', error);
     }
 }
 </script>

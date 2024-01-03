@@ -7,6 +7,7 @@ import { Scene } from '@/types/Scene';
 import { SceneAttributes } from '@/types/SceneAttributes';
 import SwitchOnOff from '@/components/SwitchOnOff.vue';
 import BrightnessSlide from '@/components/BrightnessSlide.vue';
+import ColorTemperatureSlide from '@/components/ColorTemperatureSlide.vue';
 
 const router = useRouter();
 const scenes = ref<Scene>({});
@@ -35,7 +36,6 @@ const openRenameDialog = (index: number) => {
     indexClickedRename.value = index;
   else
     indexClickedRename.value = 0;
-  console.log(index + " and " + indexClickedRename.value);
 }
 
 const checkNameScene = (newname: string) => {
@@ -56,7 +56,7 @@ const getScenes = async () => {
         const response = await axios.get(`http://${gatewayIP}/api/${APIKey}/groups/${groupId}/scenes`);
         scenes.value = response.data;
     } catch (error) {
-        console.error('Error API: ', error);
+        console.error('Error on get scene: ', error);
     }
 }
 
@@ -65,7 +65,7 @@ const getSceneInfo = async (id: number) => {
         const response = await axios.get(`http://${gatewayIP}/api/${APIKey}/groups/${groupId}/scenes/${id}`);
         sceneInfos.value = response.data;
     } catch (error) {
-        console.error('Error API: ', error);
+        console.error('Error on get scene info: ', error);
     }
 }
 
@@ -139,13 +139,15 @@ const stateScene = () => {
         <button v-if="checkNameScene(renameScene)" @click="editNameScene" >Rename</button>
         <p v-else>Name already used</p>
       </div>
-      <div v-if="index == indexClicked">
-        <p>name: {{ sceneInfos.name }} </p>
-        <li v-for="(light) in sceneInfos.lights" :key="light.id" >
-          <p>{{ light }}</p>
-          <SwitchOnOff type="light" :baseUrl="`http://${gatewayIP}/api/${APIKey}/groups/${groupId}/scenes/${index}/lights/${light.id}`"/>
-          <BrightnessSlide :baseUrl="`http://${gatewayIP}/api/${APIKey}/groups/${groupId}/scenes/${index}/lights/${light.id}`" />
-        </li>
+      <div v-if="index == indexClicked" >
+        <li v-for="(light) in sceneInfos.lights" :key="light.id" class="scene-list">
+          <div class="sceneLightInfo">
+            <p>light {{ light.id }}:</p>
+            <SwitchOnOff type="light" :baseUrl="`http://${gatewayIP}/api/${APIKey}/groups/${groupId}/scenes/${index}/lights/${light.id}`" :state="light.on"/>
+            <BrightnessSlide :baseUrl="`http://${gatewayIP}/api/${APIKey}/groups/${groupId}/scenes/${index}/lights/${light.id}`" :bri="light.bri"/>
+            <!-- <ColorTemperatureSlide :baseUrl="`http://${gatewayIP}/api/${APIKey}/groups/${groupId}/scenes/${index}/lights/${light.id}`" :ct="light.ct"/> -->
+          </div>
+        </li> 
       </div>
     </li>
   </ul>
@@ -173,6 +175,7 @@ const stateScene = () => {
   padding: 10px;
   width: 40%;
   border-radius: 15px;
+  min-width: 400px;
 }
 
 .scene-info {
@@ -217,6 +220,20 @@ const stateScene = () => {
   right: 0;
   margin-right: 2%;
   margin-bottom: 12%;
+}
+
+.scene-list {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.sceneLightInfo {
+  flex: auto;
+  border: 1px solid #ddd;
+  margin: 1%;
+  width: 40%;
+  border-radius: 15px;
 }
 
 </style>

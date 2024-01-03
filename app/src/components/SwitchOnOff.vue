@@ -17,20 +17,21 @@ const props = defineProps({
         type: String,
         required: true
     },
+    state: {
+        type: Boolean,
+        required: false,
+    },
 });
 
 watch(isSwitchOnOff, (newState) => {
-    console.log('isSwitchOnOff:', newState);
     isSwitchOnOff.value = newState;
 });
 
 watch(isLightOn, (newState) => {
-    console.log('isLightOn:', newState);
     isLightOn.value = newState;
 });
 
 watch(groupState, (newState) => {
-    console.log('groupState:', newState);
     groupState.value = newState;
 });
 
@@ -47,15 +48,18 @@ const getGroup = () => {
 }
 
 const getLight = () => {
+    if (props.state) {
+        isSwitchOnOff.value = props.state;
+    } else {
     axios.get(baseUrl.value)
         .then(response => {
-            console.log('[switch on off]state on/off:', response.data.state.on);
             isLightOn.value = response.data.state.on;
             isSwitchOnOff.value = response.data.state.on;
         })
         .catch(error => {
             console.error('Error updating light state:', error);
         });
+    }
 }
 
 onMounted(() => {
@@ -74,20 +78,14 @@ const SwitchOnOffFunction = () => {
 
     if (type.value == 'group') {
         axios.put(baseUrl.value + `/action`, body)
-        .then(response => {
-            console.log('Response:', response);
-        })
         .catch(error => {
-            console.error('Error API:', error);
+            console.error('Error change light group:', error);
         });
     }
     if (type.value == 'light') {
         axios.put(baseUrl.value + `/state`, body)
-        .then(response => {
-            console.log('Response:', response);
-        })
         .catch(error => {
-            console.error('Error API:', error);
+            console.error('Error change light state:', error);
         });
     }
 }

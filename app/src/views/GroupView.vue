@@ -42,7 +42,6 @@ const getGroup = async () => {
     try {
         const response = await axios.get(`http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/groups/${groupId}`);
         group.value = response.data;
-        console.log('Group data: ', response.data);
 
         if (group.value?.lights) {
             group.value.lights.forEach((lightId: string) => {
@@ -64,7 +63,6 @@ const getLight = async (lightId: string) => {
         lightData.state.temperature = lightData.state.ct;
 
         lights.value.push(lightData);
-        console.log('Light data: ', lightData);
     } catch (error) {
         console.error('Error API: ', error);
     }
@@ -116,7 +114,6 @@ const searchLights = async () => {
 const setTimer = (time: number) => {
     timer.value = time;
     const interval = setInterval(() => {
-        console.log(timer);
         timer.value--;
         if (timer.value === 0) {
             isSearching.value = false;
@@ -124,33 +121,6 @@ const setTimer = (time: number) => {
         }
     }, 1000);
 }
-
-const updateLightState = async (lightId: string) => {
-  const light = lights.value.find((l) => l.id === lightId);
-
-  if (!light) {
-    console.error('Light not found:', lightId);
-    return;
-  }
-
-  const validTemperature = Math.min(light.ctmax, Math.max(light.ctmin, light.state.temperature));
-
-  const payload = {
-    on: light.state.on,
-    ct: validTemperature,
-  };
-
-  try {
-    const response = await axios.put(
-      `http://${process.env.VUE_APP_GATEWAY_IP}/api/${process.env.VUE_APP_API_KEY}/lights/${lightId}/state`,
-      payload
-    );
-
-    console.log('Light state updated successfully:', response.data);
-  } catch (error) {
-    console.error('Error updating light state:', error);
-  }
-};
 
 </script>
 
@@ -194,7 +164,7 @@ const updateLightState = async (lightId: string) => {
             <!-- Brightness Slider -->
             <BrightnessSlide :baseUrl="`http://${gatewayIP}/api/${APIKey}/lights/${light.id}`" />
             <!-- Temperature Slider -->
-            <ColorTemperatureSlide :lightId="light.id" />
+            <ColorTemperatureSlide :baseUrl="`http://${gatewayIP}/api/${APIKey}/lights/${light.id}`" />
           </div>
 
         </li>
